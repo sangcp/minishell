@@ -47,24 +47,24 @@ int cmd_cd(char *cmd)
 	return (0);
 }
 
-static void		echo_out(char **str, int pos)
+void		print_echo(char **str, int i)
 {
 	int		starts_qu;
 	int		ends_qu;
 	int		len;
 
-	starts_qu = is_quotes(str[pos][0]);
-	len = (int)ft_strlen(str[pos]);
-	ends_qu = is_quotes(str[pos][len - 1]);
+	starts_qu = is_quotes(str[i][0]);
+	len = (int)ft_strlen(str[i]);
+	ends_qu = is_quotes(str[i][len - 1]);
 	if (ends_qu && starts_qu)
-		ft_putnstr(str[pos] + 1, -1);
+		ft_putnstr(str[i] + 1, -1);
 	else if (ends_qu)
-		ft_putnstr(str[pos], -1);
+		ft_putnstr(str[i], -1);
 	else if (starts_qu)
-		ft_putstr_fd(str[pos] + 1, 1);
+		ft_putstr_fd(str[i] + 1, 1);
 	else
-		ft_putstr_fd(str[pos], 1);
-	if (str[pos + 1])
+		ft_putstr_fd(str[i], 1);
+	if (str[i + 1])
 		ft_putchar_fd(' ', 1);
 }
 
@@ -88,7 +88,7 @@ int cmd_echo(char *cmd)
 		i++;
 	while (command[i])
 	{
-		echo_out(command, i);
+		print_echo(command, i);
 		if (!n_flag && !command[i + 1])
 			ft_putchar_fd('\n', 1);
 		i++;
