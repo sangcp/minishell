@@ -59,6 +59,7 @@ int cmd_cd(char *cmd, char **envp)
 	}
 	if ((chdir(strs[1])) == -1)
 		ft_putstr_fd("cd fail\n", 2);
+	path_free(strs);
 	return (0);
 }
 
@@ -108,6 +109,7 @@ int cmd_echo(char *cmd)
 			ft_putchar_fd('\n', 1);
 		i++;
 	}
+	path_free(command);
 	return (0);
 }
 
@@ -147,6 +149,8 @@ int run_cmd(char *cmd, char **envp)
 		ft_putstr_fd("pipex: command not found : ", STDERR_FILENO);
 		ft_putstr_fd(cmd, STDERR_FILENO);
 		write(STDERR_FILENO, "\n", 1);
+		path_free(path);
+		path_free(strs);
 		return (-1);
 	}
 	wait(&pid);
@@ -168,5 +172,7 @@ int main(int ac, char **av, char **envp)
 		i = run_cmd(cmd, envp);
 		if (i == -1)
 			break ;
+		free(cmd);
 	}
+	system("leaks minishell");
 }

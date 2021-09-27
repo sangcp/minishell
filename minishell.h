@@ -10,5 +10,6 @@
 # include "libft/libft.h"
 
 int is_quotes(char c);
+void path_free(char **str);
 
 #endif
