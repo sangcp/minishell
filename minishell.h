@@ -9,4 +9,6 @@
 # include <errno.h>
 # include "libft/libft.h"
 
+int is_quotes(char c);
+
 #endif
