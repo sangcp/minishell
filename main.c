@@ -1,5 +1,8 @@
 #include "minishell.h"
 
+
+//===========****===========****===========****===========****===========****===========****===========****===========****===========****===========****===========****//
+
 char		*get_env(char **envp, char *option)
 {
 	int		i;
@@ -30,12 +33,33 @@ void terminal_msg()
 	ft_putstr_fd(" $ ", 1);
 }
 
-void get_cmd(char **cmd)
+void	exit_shell(void)
+{
+	write(1, "\n", 1);
+	exit(0);
+}
+
+char *get_cmd()
 {
 	int i;
+	char *cmd;
 
 	i = 0;
-	get_next_line(1, cmd);
+	//cmd = NULL;
+	/*if (get_next_line(1, &cmd) == -1)
+	{
+		ft_putstr_fd("\b   \b\bexit", 1);
+		exit_shell();
+	}*/
+	cmd = readline("bash-3.2$");
+	if (!cmd)
+	{
+		printf("\x1b[1A");
+		printf("\x1b[6C");
+		printf("exit"); //\x1b1A 15C
+		exit_shell();
+	}
+	return (cmd);
 }
 
 char	*get_path(char **strs)
@@ -46,20 +70,17 @@ char	*get_path(char **strs)
 		return (strs[1] + 1);
 }
 
-int cmd_cd(char *cmd, char **envp)
+int cmd_cd(char **args, char **envp)
 {
-	char **strs;
-
-	strs = ft_split(cmd, ' ');
-	if (strs[1][0] == '~')
+	if (args[1][0] == '~')
 	{
-		if ((chdir(ft_strjoin(get_env(envp, "HOME"), get_path(strs)))) == -1)
+		if ((chdir(ft_strjoin(get_env(envp, "HOME"), get_path(args)))) == -1)
 			ft_putstr_fd("cd fail\n", 2);
 		return (0);
 	}
-	if ((chdir(strs[1])) == -1)
+	if ((chdir(args[1])) == -1)
 		ft_putstr_fd("cd fail\n", 2);
-	path_free(strs);
+	path_free(args);
 	return (0);
 }
 
@@ -84,36 +105,38 @@ void		print_echo(char **str, int i)
 		ft_putchar_fd(' ', 1);
 }
 
-int cmd_echo(char *cmd)
+int cmd_echo(char **args, char **envp)
 {
 	int n_flag;
-	char **command;
 	int i;
 
-	i = 0;
-	command = ft_split(cmd, ' ');
-	if (!command[0])
+	i = 1;
+	if (!args[1])
 	{
 		ft_putchar_fd('\n', 1);
 		return (0);
 	}
 	n_flag = 0;
-	if (command[0][0] == '-' && command[0][1] == 'n' && command[0][2] == '\0')
+    if (args[1][0] == '$')
+        return(print_export(args[1], envp));
+	if (args[1][0] == '-' && args[1][1] == 'n' && args[1][2] == '\0')
 		n_flag = 1;
 	if (n_flag)
 		i++;
-	while (command[i])
+	while (args[i])
 	{
-		print_echo(command, i);
-		if (!n_flag && !command[i + 1])
+		print_echo(args, i);
+		if (!n_flag && !args[i + 1])
 			ft_putchar_fd('\n', 1);
 		i++;
 	}
-	path_free(command);
 	return (0);
 }
+//==============*==============*==============*==============*==============*==============*==============*==============*==============*//
 
-int run_cmd(char *cmd, char **envp)
+//==============*==============*==============*==============*==============*==============*==============*==============*==============*//
+
+int run_cmd(char *cmd, char ***envp)// t_shell *mini, t_list *list)
 {
 	char **path;
 	char **strs;
@@ -124,15 +147,26 @@ int run_cmd(char *cmd, char **envp)
 	if (!(ft_strcmp(cmd, "exit")))
 		return (-1);
 	if (!(ft_strncmp(cmd, "cd", 2)))
-		return (cmd_cd(cmd, envp));
+		return (cmd_cd(&cmd, *envp));
 	if (!(ft_strncmp(cmd, "echo", 4)))
-		return (cmd_echo(cmd + 5));
+		return (cmd_echo((&cmd), *envp));
+    if (!(ft_strncmp(cmd, "export", 5)))
+    {
+        *envp = cmd_export(&cmd, *envp);
+        return (0);
+    }
+    if (!(ft_strncmp(cmd, "env", 3)))
+        return (cmd_env(&cmd, *envp));
+	if (ft_strchr(cmd, '|'))
+		return (cmd_pipe(cmd, *envp));
 	pid = fork();
+	signal(SIGINT, sighandler2);
+	signal(SIGQUIT, pipe_sighandler2);
 	i = 0;
 	if (pid == 0)
 	{
-		path = ft_split(get_env(envp, "PATH"), ':');
-		strs = ft_split(cmd, ' ');
+		path = ft_split2(get_env(*envp, "PATH"), ':');
+		strs = ft_split2(cmd, ' ');
 		if (!ft_strncmp(*strs, "/bin/", 5))
 			*strs = *strs + 5;
 		while (path[i])
@@ -140,7 +174,7 @@ int run_cmd(char *cmd, char **envp)
 			tmp = ft_strjoin(path[i], "/");
 			path[i] = tmp;
 			tmp = ft_strjoin(path[i], *strs);
-			execve(tmp, strs, envp);
+			execve(tmp, strs, *envp);
 			if (errno != ENOENT)
 				perror("pipex:");
 			free(tmp);
@@ -157,22 +191,45 @@ int run_cmd(char *cmd, char **envp)
 	return (0);
 }
 
+void	reset_fds(t_shell *mini)
+{
+	dup2(mini->fds[0], 0);
+	dup2(mini->fds[1], 1);
+	dup2(mini->stdinp, 0);
+	dup2(mini->stdout, 1);
+}
+
 int main(int ac, char **av, char **envp)
 {
 	char *cmd;
 	int i;
+	t_shell mini;
+	t_list *list;
+
 
 	i = 0;
+	mini.fds[0] = dup(STDIN_FILENO);
+	mini.fds[1] = dup(STDOUT_FILENO);
 	(void)av;
 	(void)ac;
+	(void)envp;
 	while (1)
 	{
-		terminal_msg();
-		get_cmd(&cmd);
-		i = run_cmd(cmd, envp);
+		//terminal_msg();
+		signal(SIGINT, &sighandler1);
+		signal(SIGQUIT, &pipe_sighandler1);
+		cmd = get_cmd();
+		//cmd = readline("bash $");
+		//list = parse(&mini, cmd);
+		list = parse_option(cmd);
+		free(cmd);
+		mini.prev_pipe = STDIN_FILENO;
+		mini.count = ft_lstsize(list);
+		//i = run_cmd(cmd, &envp);
+		i = run_cmd1(&mini, list, envp);
+		reset_fds(&mini);
+		add_history(cmd);
 		if (i == -1)
 			break ;
-		free(cmd);
 	}
-	system("leaks minishell");
 }
