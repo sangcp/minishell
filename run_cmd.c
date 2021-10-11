@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
 int append_input(t_list *list, t_shell *mini, char **envp)
 {
 	char **cmd;
@@ -44,7 +44,59 @@ int append_input(t_list *list, t_shell *mini, char **envp)
 	((t_ops *)(list->content))->type = ' ';
 	mini->count--;
 	return (0);
+}*/
+/*
+int	append_here(t_list *list, t_shell *mini, char **envp)
+{
+	int		fd;
+	char	*filename;
+	(void)list;
+
+	mini->fds[0] = dup(STDIN_FILENO);
+	filename = ((t_ops *)(list->next->content))->args[0];
+	printf("na = %s\n", filename);
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+	{
+		printf("%s: no such file or directory\n", filename);
+		return (-1);
+	}
+	dup2(mini->fds[0], STDIN_FILENO);
+	mini->rv = exec_cmp(mini, ((t_ops *)(list->content))->args, envp);
+	close(mini->fds[0]);
+	dup2(mini->fds[0], STDIN_FILENO);
+	return (0);
 }
+
+static void	write_heredoc(t_shell *mini)
+{
+	char	*str;
+	(void)mini;
+	int		fd;
+	//char *line;
+	//char buf[42];
+
+	fd = open(mini->args[0], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	printf("%s %d\n", mini->args[0], fd);
+	if (fd < 0)
+		exit(1);
+	str = readline("heredoc> ");
+	while (str != NULL && ft_strcmp(str, mini->args[0]))
+	{
+		write(fd, str, ft_strlen(str));
+		write(fd, "\n", 1);
+		free(str);
+		str = readline("heredoc> ");
+	}
+	close(fd);
+	fd = open(mini->args[0], O_RDONLY);
+	//get_next_line(fd, &line);
+	read(fd, buf, 100);
+	printf("a = %s b = %s\n", mini->args[0], buf);
+	free(str);
+	close(fd);
+}*/
+
 int	operator_exec(t_list *list, t_shell *mini, char **envp)
 {
 	if (((t_ops *)(list->content))->type == '|')
@@ -55,6 +107,8 @@ int	operator_exec(t_list *list, t_shell *mini, char **envp)
 		return (append_output(list, mini, envp));
 	else if (((t_ops *)(list->content))->type == '<')
 		return (redirect_input(list, mini, envp));
+	else if (((t_ops *)(list->content))->type == '{')
+		return (append_input(mini, list, envp));
 	else
 		return (-1);
 }
@@ -124,8 +178,12 @@ int	exec_cmp(t_shell *mini, char **args, char **envp)
 
 int run_cmd1(t_shell *mini, t_list *list, char **envp)
 {
-	if (((t_ops *)(list->content))->type == '{')
-		append_input(list, mini, envp);
+	/*if (((t_ops *)(list->content))->type == '{')
+	{
+		append_input(mini, list, envp);
+		list = list->next;
+		mini->count = ft_lstsize(list);
+	}*/
 	while (mini->count > 1)
 	{
 		mini->args = ((t_ops *)(list->content))->args;
