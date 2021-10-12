@@ -27,9 +27,9 @@ LIBFT = ./libft/libft.a
 LIBINC = ./libft/
 
 # Optimization and Compiler flags and commands
-CC = gcc -g
+CC = gcc 
 CFLAGS = -Wall -Werror -Wextra
-READ = -lreadline
+READ = -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
 
 # Debugging flags
 DEBUG = -g
@@ -68,3 +68,5 @@ re: fclean all
 
 # Just in case those files exist in the root dir
 .PHONY: all fclean clean re
+
+# gcc *.c libft/libft.a -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include

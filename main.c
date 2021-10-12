@@ -54,8 +54,8 @@ char *get_cmd()
 	cmd = readline("bash-3.2$");
 	if (!cmd)
 	{
-		printf("\x1b[1A");
-		printf("\x1b[6C");
+		printf("\x1b[2A");
+		printf("\x1b[10C");
 		printf("exit"); //\x1b1A 15C
 		exit_shell();
 	}

@@ -23,6 +23,8 @@ void sighandler1(int sig)
 		ft_putstr_fd("\n", 1); //\x1b1A 15C
         ft_putstr_fd("bash-3.2$", 1);
 		//terminal_msg();
+		//rl_on_new_line();
+		//rl_replace_line("", 0);
 		rl_redisplay();
 		//signal(SIGINT, &sighandler1);
 	}
