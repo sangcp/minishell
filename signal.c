@@ -2,8 +2,12 @@
 
 void pipe_sighandler1(int sig)
 {
-	if (sig == SIGQUIT)
-		ft_putstr_fd("", 1);
+	(void)sig;
+	rl_on_new_line();
+	rl_redisplay();
+	//ft_putstr_fd("\x1b[10C", 1);
+	/*if (sig == SIGQUIT)
+		ft_putstr_fd("", 1);*/
 }
 
 void pipe_sighandler2(int sig)
@@ -19,12 +23,12 @@ void sighandler1(int sig)
 {
 	if (sig == SIGINT)
 	{
-       // ft_putstr_fd("\b\b  ", 2);
+		//ft_putstr_fd("\x1b[10C", 1);
 		ft_putstr_fd("\n", 1); //\x1b1A 15C
-        ft_putstr_fd("bash-3.2$", 1);
+        //ft_putstr_fd("bash-3.2$ ", 1);
 		//terminal_msg();
-		//rl_on_new_line();
-		//rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_replace_line("", 0);
 		rl_redisplay();
 		//signal(SIGINT, &sighandler1);
 	}

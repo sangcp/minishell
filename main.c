@@ -29,8 +29,8 @@ void terminal_msg()
 	char *msg;
 
 	msg = getcwd(buf, 100);
-	ft_putstr_fd(msg, 1);
-	ft_putstr_fd(" $ ", 1);
+	//ft_putstr_fd(msg, 1);
+	ft_putstr_fd("bash-3.2$", 1);
 }
 
 void	exit_shell(void)
@@ -51,7 +51,7 @@ char *get_cmd()
 		ft_putstr_fd("\b   \b\bexit", 1);
 		exit_shell();
 	}*/
-	cmd = readline("bash-3.2$");
+	cmd = readline("bash-3.2$ ");
 	if (!cmd)
 	{
 		printf("\x1b[2A");
@@ -199,6 +199,23 @@ void	reset_fds(t_shell *mini)
 	dup2(mini->stdout, 1);
 }
 
+void	init_term(t_shell *mini)
+{
+	tcgetattr(STDIN_FILENO, &mini->t_sv);
+	tcgetattr(STDIN_FILENO, &mini->term);
+	mini->term.c_lflag &= ~ICANON;
+	//mini->term.c_lflag &= ~ECHO;
+	mini->term.c_cc[VMIN] = 1;
+	mini->term.c_cc[VTIME] = 0;
+	tcsetattr(STDIN_FILENO, TCSANOW, &mini->term);
+	//tgetent(NULL, "xterm");
+}
+
+void	restore_term(t_shell *mini)
+{
+	tcsetattr(STDIN_FILENO, TCSANOW, &mini->t_sv);
+}
+
 int main(int ac, char **av, char **envp)
 {
 	char *cmd;
@@ -206,26 +223,25 @@ int main(int ac, char **av, char **envp)
 	t_shell mini;
 	t_list *list;
 
-
 	i = 0;
 	mini.fds[0] = dup(STDIN_FILENO);
 	mini.fds[1] = dup(STDOUT_FILENO);
 	(void)av;
 	(void)ac;
 	(void)envp;
+	//init_term(&mini);
 	while (1)
 	{
 		//terminal_msg();
 		signal(SIGINT, &sighandler1);
 		signal(SIGQUIT, &pipe_sighandler1);
+		//tcsetattr(STDIN_FILENO, TCSANOW, &mini.term);
 		cmd = get_cmd();
-		//cmd = readline("bash $");
-		//list = parse(&mini, cmd);
 		list = parse_option(cmd);
 		free(cmd);
 		mini.prev_pipe = STDIN_FILENO;
 		mini.count = ft_lstsize(list);
-		//i = run_cmd(cmd, &envp);
+		//restore_term(&mini);
 		i = run_cmd1(&mini, list, envp);
 		reset_fds(&mini);
 		add_history(cmd);
