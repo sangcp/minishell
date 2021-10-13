@@ -94,7 +94,6 @@ int	append_input(t_shell *mini, t_list *list, char **envp)
 	int		fd;
 
 	fd = open(((t_ops *)(list->next->content))->args[0], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	printf("%s %d\n", mini->args[0], fd);
 	if (fd < 0)
 		exit(1);
 	str = readline("heredoc> ");
@@ -105,6 +104,7 @@ int	append_input(t_shell *mini, t_list *list, char **envp)
 		free(str);
 		str = readline("heredoc> ");
 	}
+	free(str);
 	close(fd);
 	redirect_input(list, mini, envp);
 	unlink(((t_ops *)(list->next->content))->args[0]);

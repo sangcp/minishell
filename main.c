@@ -198,24 +198,6 @@ void	reset_fds(t_shell *mini)
 	dup2(mini->stdout, 1);
 }
 
-void	init_term(t_shell *mini)
-{
-	tcgetattr(STDIN_FILENO, &mini->t_sv);
-	tcgetattr(STDIN_FILENO, &mini->term);
-	mini->term.c_lflag &= ~ICANON;
-	//mini->term.c_lflag &= ~ECHO;
-	mini->term.c_lflag &= ~ECHOCTL;
-	mini->term.c_cc[VMIN] = 1;
-	mini->term.c_cc[VTIME] = 0;
-	tcsetattr(STDIN_FILENO, TCSANOW, &mini->term);
-	//tgetent(NULL, "xterm");
-}
-
-void	restore_term(t_shell *mini)
-{
-	tcsetattr(STDIN_FILENO, TCSANOW, &mini->t_sv);
-}
-
 int main(int ac, char **av, char **envp)
 {
 	char *cmd;
@@ -245,7 +227,7 @@ int main(int ac, char **av, char **envp)
 		mini.count = ft_lstsize(list);
 		restore_term(&mini);
 		i = run_cmd1(&mini, list, envp);
-		//free_all(&mini, list);
+		free_all(&mini, list);
 		reset_fds(&mini);
 		free(cmd);
 		if (i == -1)

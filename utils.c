@@ -23,6 +23,8 @@ void free_all(t_shell *mini, t_list *list)
 	int i = 0;
 
 	(void)mini;
+	if (list == NULL)
+		return ;
 	tlist = list;
 	while (tlist->next)
 	{

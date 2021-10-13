@@ -105,6 +105,8 @@ t_list *parse_option(char *cmd)
 	int i;
 
 	i = 0;
+	if (!ft_strcmp(cmd, ""))
+		return (NULL);
 	list = NULL;
 	while (1)
 	{

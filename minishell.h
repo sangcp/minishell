@@ -112,7 +112,7 @@ int	operator_pipe(t_list *list, t_shell *mini, char **envp);
 int	append_input(t_shell *mini, t_list *list, char **envp);
 
 // ---- term.c ---//
-//void	init_term(void);
-//void	restore_term(void);
+void	init_term(t_shell *mini);
+void	restore_term(t_shell *mini);
 
 #endif
