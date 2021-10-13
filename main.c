@@ -45,7 +45,6 @@ char *get_cmd()
 	char *cmd;
 
 	i = 0;
-	//cmd = NULL;
 	/*if (get_next_line(1, &cmd) == -1)
 	{
 		ft_putstr_fd("\b   \b\bexit", 1);
@@ -205,6 +204,7 @@ void	init_term(t_shell *mini)
 	tcgetattr(STDIN_FILENO, &mini->term);
 	mini->term.c_lflag &= ~ICANON;
 	//mini->term.c_lflag &= ~ECHO;
+	mini->term.c_lflag &= ~ECHOCTL;
 	mini->term.c_cc[VMIN] = 1;
 	mini->term.c_cc[VTIME] = 0;
 	tcsetattr(STDIN_FILENO, TCSANOW, &mini->term);
@@ -229,23 +229,27 @@ int main(int ac, char **av, char **envp)
 	(void)av;
 	(void)ac;
 	(void)envp;
-	//init_term(&mini);
+	init_term(&mini);
 	while (1)
 	{
 		//terminal_msg();
 		signal(SIGINT, &sighandler1);
-		signal(SIGQUIT, &pipe_sighandler1);
-		//tcsetattr(STDIN_FILENO, TCSANOW, &mini.term);
+		//signal(SIGQUIT, &pipe_sighandler1);
+		signal(SIGQUIT, SIG_IGN);
+		tcsetattr(STDIN_FILENO, TCSANOW, &mini.term);
 		cmd = get_cmd();
+		if (*cmd)
+			add_history(rl_line_buffer);
 		list = parse_option(cmd);
-		free(cmd);
 		mini.prev_pipe = STDIN_FILENO;
 		mini.count = ft_lstsize(list);
-		//restore_term(&mini);
+		restore_term(&mini);
 		i = run_cmd1(&mini, list, envp);
+		//free_all(&mini, list);
 		reset_fds(&mini);
-		add_history(cmd);
+		free(cmd);
 		if (i == -1)
 			break ;
 	}
+	//system("leaks a.out");
 }

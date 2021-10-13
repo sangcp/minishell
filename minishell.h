@@ -82,6 +82,8 @@ void	ef_init(t_ef *ef);
 void path_free(char **str);
 int is_quotes(char c);
 
+void free_all(t_shell *mini, t_list *list);
+
 // ------ signal.c -----//
 
 void sighandler1(int sig);
