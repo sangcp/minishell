@@ -6,7 +6,7 @@
 #    By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/26 22:48:03 by sangcpar          #+#    #+#              #
-#    Updated: 2021/09/28 19:43:33 by sangcpar         ###   ########.fr        #
+#    Updated: 2021/10/14 14:03:48 by sangcpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -70,3 +70,4 @@ re: fclean all
 .PHONY: all fclean clean re
 
 # gcc *.c libft/libft.a -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
+# gcc *.c libft/libft.a -lreadline -L/Users/sangcpar/.brew/opt/readline/lib -I/Users/sangcpar/.brew/opt/readline/include
