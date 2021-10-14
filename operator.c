@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 09:03:35 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/04 09:03:36 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/14 14:54:36 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,13 @@ int	append_input(t_shell *mini, t_list *list, char **envp)
 	fd = open(((t_ops *)(list->next->content))->args[0], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (fd < 0)
 		exit(1);
-	str = readline("heredoc> ");
+	str = readline("> ");
 	while (str != NULL && ft_strcmp(str, ((t_ops *)(list->next->content))->args[0]))
 	{
 		write(fd, str, ft_strlen(str));
 		write(fd, "\n", 1);
 		free(str);
-		str = readline("heredoc> ");
+		str = readline("> ");
 	}
 	free(str);
 	close(fd);
