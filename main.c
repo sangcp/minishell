@@ -79,7 +79,7 @@ int cmd_cd(char **args, char **envp)
 	}
 	if ((chdir(args[1])) == -1)
 		ft_putstr_fd("cd fail\n", 2);
-	path_free(args);
+	//path_free(args);
 	return (0);
 }
 

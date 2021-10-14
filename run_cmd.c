@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 10:03:38 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/03 10:03:39 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/14 14:42:40 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,15 @@ int run_cmd2(t_shell *mini, char **envp)
 	return (0);
 }
 
+int cmd_pwd(char **args, char **envp)
+{
+	char buf[1000];
+
+	getcwd(buf, 1000);
+	printf("%s\n", buf);
+	return (0);
+}
+
 int	exec_cmp(t_shell *mini, char **args, char **envp)
 {
 	unsigned long	i;
@@ -161,7 +170,10 @@ int	exec_cmp(t_shell *mini, char **args, char **envp)
 	if (mini->args == NULL)
 		return (0);
 	if (ft_strcmp(args[0], "exit") == 0)
+	{
+		printf("%s\n", "exit");
 		return (-1);
+	}
 	if (!(ft_strncmp(args[0], "cd", 2)))
 		return (cmd_cd(args, envp));
 	if (!(ft_strncmp(args[0], "echo", 4)))
@@ -173,6 +185,8 @@ int	exec_cmp(t_shell *mini, char **args, char **envp)
     }
     if (!(ft_strncmp(args[0], "env", 3)))
         return (cmd_env(args, envp));
+	if (!(ft_strncmp(args[0], "pwd", 3)))
+        return (cmd_pwd(args, envp));
 	return (run_cmd2(mini, envp));
 }
 
