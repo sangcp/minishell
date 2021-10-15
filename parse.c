@@ -87,7 +87,7 @@ t_ops	*set_ops(char *cmd, int i)
 	t_ops	*ops;
 
 	ops = (t_ops *)malloc(sizeof(t_ops));
-	if (cmd[i] != '\0')
+	if (cmd[i] != '\0' && cmd[i - 1] == ' ')
 		ops->operation = ft_substr(cmd, 0, i - 1);
 	else
 		ops->operation = ft_substr(cmd, 0, i);

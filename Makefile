@@ -14,12 +14,26 @@
 NAME = minishell
 
 # Project builds and dirs
+SRCS = cmd_env.c\
+		cmd_export.c\
+		ft_split_1.c\
+		ft_split_2.c\
+		ft_split_utils.c\
+		main.c\
+		operator.c\
+		parse.c\
+		pipe.c\
+		run_cmd.c\
+		signal.c\
+		termios.c\
+		utils.c
+
 SRCDIR = ./
 SRCNAMES = $(shell ls $(SRCDIR) | grep -E ".+\.c")
 SRC = $(addprefix $(SRCDIR), $(SRCNAMES))
-INC = ./
+INC = ./minishell.h
 BUILDDIR = ./build/
-BUILDOBJS = $(addprefix $(BUILDDIR), $(SRCNAMES:.c=.o))
+BUILDOBJS = $(addprefix $(BUILDDIR)/, $(SRCS:.c=.o))
 
 # Libft builds and dirs
 LIBDIR = ./libft/
@@ -35,23 +49,23 @@ READ = -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/
 DEBUG = -g
 
 # Main rule
-all: $(BUILDDIR) $(LIBFT) $(NAME)
+all: lib $(NAME)
+
+# Objects rule
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c $(INC)
+	$(CC) $(CFLAGS) -I $(LIBINC) -I $(INC) -c $< -o $@
+
+# Libft rule
+lib:
+	make -C $(LIBDIR)
+
+# Project file rule
+$(NAME): $(BUILDDIR) $(BUILDOBJS)
+	$(CC) -L$(LIBDIR) -lft $(BUILDOBJS) $(READ) -o $(NAME)
 
 # Object dir rule
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
-
-# Objects rule
-$(BUILDDIR)%.o:$(SRCDIR)%.c
-	$(CC) $(CFLAGS) -I$(LIBINC) -I$(INC) -o $@ -c $<
-
-# Project file rule
-$(NAME): $(BUILDOBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(BUILDOBJS) $(LIBFT) $(READ)
-
-# Libft rule
-$(LIBFT):
-	make -C $(LIBDIR)
 
 # Cleaning up the build files
 clean:
@@ -70,4 +84,4 @@ re: fclean all
 .PHONY: all fclean clean re
 
 # gcc *.c libft/libft.a -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
-# gcc *.c libft/libft.a -lreadline -L/Users/sangcpar/.brew/opt/readline/lib -I/Users/sangcpar/.brew/opt/readline/include
+# gcc *.c libft/libft.a -lreadline -L$(HOME)/.brew/opt/readline/lib -I$(HOME)/.brew/opt/readline/include

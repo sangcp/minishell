@@ -47,7 +47,6 @@ typedef struct s_shell
 	struct termios		t_sv;
 }					t_shell;
 
-
 typedef struct			s_state
 {
 	int ret;

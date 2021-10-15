@@ -69,6 +69,8 @@ int	cmd_pwd(char **args, char **envp)
 {
 	char	buf[1000];
 
+	(void)args;
+	(void)envp;
 	getcwd(buf, 1000);
 	printf("%s\n", buf);
 	return (0);
