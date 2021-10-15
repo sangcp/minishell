@@ -30,7 +30,7 @@ void terminal_msg()
 
 	msg = getcwd(buf, 100);
 	//ft_putstr_fd(msg, 1);
-	ft_putstr_fd("bash-3.2$", 1);
+	ft_putstr_fd("minishell$ ", 1);
 }
 
 void	exit_shell(void)
@@ -50,11 +50,11 @@ char *get_cmd()
 		ft_putstr_fd("\b   \b\bexit", 1);
 		exit_shell();
 	}*/
-	cmd = readline("bash-3.2$ ");
+	cmd = readline("minishell$ ");
 	if (!cmd)
 	{
 		printf("\x1b[2A");
-		printf("\x1b[10C");
+		printf("\x1b[11C");
 		printf("exit"); //\x1b1A 15C
 		exit_shell();
 	}
@@ -134,61 +134,6 @@ int cmd_echo(char **args, char **envp)
 //==============*==============*==============*==============*==============*==============*==============*==============*==============*//
 
 //==============*==============*==============*==============*==============*==============*==============*==============*==============*//
-
-int run_cmd(char *cmd, char ***envp)// t_shell *mini, t_list *list)
-{
-	char **path;
-	char **strs;
-	char *tmp;
-	pid_t pid;
-	int i;
-
-	if (!(ft_strcmp(cmd, "exit")))
-		return (-1);
-	if (!(ft_strncmp(cmd, "cd", 2)))
-		return (cmd_cd(&cmd, *envp));
-	if (!(ft_strncmp(cmd, "echo", 4)))
-		return (cmd_echo((&cmd), *envp));
-    if (!(ft_strncmp(cmd, "export", 5)))
-    {
-        *envp = cmd_export(&cmd, *envp);
-        return (0);
-    }
-    if (!(ft_strncmp(cmd, "env", 3)))
-        return (cmd_env(&cmd, *envp));
-	if (ft_strchr(cmd, '|'))
-		return (cmd_pipe(cmd, *envp));
-	pid = fork();
-	signal(SIGINT, sighandler2);
-	signal(SIGQUIT, pipe_sighandler2);
-	i = 0;
-	if (pid == 0)
-	{
-		path = ft_split2(get_env(*envp, "PATH"), ':');
-		strs = ft_split2(cmd, ' ');
-		if (!ft_strncmp(*strs, "/bin/", 5))
-			*strs = *strs + 5;
-		while (path[i])
-		{
-			tmp = ft_strjoin(path[i], "/");
-			path[i] = tmp;
-			tmp = ft_strjoin(path[i], *strs);
-			execve(tmp, strs, *envp);
-			if (errno != ENOENT)
-				perror("pipex:");
-			free(tmp);
-			i++;
-		}
-		ft_putstr_fd("pipex: command not found : ", STDERR_FILENO);
-		ft_putstr_fd(cmd, STDERR_FILENO);
-		write(STDERR_FILENO, "\n", 1);
-		path_free(path);
-		path_free(strs);
-		return (-1);
-	}
-	wait(&pid);
-	return (0);
-}
 
 void	reset_fds(t_shell *mini)
 {

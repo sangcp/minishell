@@ -84,9 +84,13 @@ char	**parse_args(char *line, t_ops *ops)
 t_ops	*set_ops(char *cmd, int i)
 {
 	t_ops *ops;
+	int j = 0;
 
 	ops = (t_ops*)malloc(sizeof(t_ops));
-	ops->operation = ft_substr(cmd, 0, i);
+	if (cmd[i] != '\0')
+		ops->operation = ft_substr(cmd, 0, i - 1);
+	else
+		ops->operation = ft_substr(cmd, 0, i);
 	ops->args = parse_args(ops->operation, ops);
 	if (cmd[i] && cmd[i + 1] == '>')
 		ops->type = '}';
@@ -95,6 +99,8 @@ t_ops	*set_ops(char *cmd, int i)
 	else
 		ops->type = cmd[i];
 	ops->next = NULL;
+	/*while (ops->args[j])
+		printf("(%s) (%c) (%c)\n", ops->args[j++], ops->type, cmd[i]);*/
 	return (ops);
 }
 
@@ -131,8 +137,11 @@ t_list *parse_option(char *cmd)
 t_list *parse(t_shell *mini, char *cmd)
 {
 	t_list *list;
+	t_list *tlist;
+	int i = 0;
 
 	(void)mini;
 	list = parse_option(cmd);
+	tlist = list;
 	return (list);
 }
