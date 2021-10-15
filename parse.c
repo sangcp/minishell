@@ -85,10 +85,16 @@ char	**parse_args(char *line, t_ops *ops)
 t_ops	*set_ops(char *cmd, int i)
 {
 	t_ops	*ops;
+	int		j;
 
+	j = 1;
 	ops = (t_ops *)malloc(sizeof(t_ops));
 	if (cmd[i] != '\0' && cmd[i - 1] == ' ')
-		ops->operation = ft_substr(cmd, 0, i - 1);
+	{
+		while (cmd[i - j] == ' ')
+			j++;
+		ops->operation = ft_substr(cmd, 0, i - j + 1);
+	}
 	else
 		ops->operation = ft_substr(cmd, 0, i);
 	ops->args = parse_args(ops->operation, ops);
@@ -102,6 +108,39 @@ t_ops	*set_ops(char *cmd, int i)
 	return (ops);
 }
 
+int		cmd_chk(char *cmd)
+{
+	int i;
+
+	i = 0;
+	if (!ft_strcmp(cmd, ""))
+		return (1);
+	if (ft_strchr("<>|;", cmd[i]))
+	{
+		i++;
+		if (cmd[0] == '|' || cmd[0] == ';')
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
+			printf("\'%c\'\n", cmd[0]);
+			return (1);
+		}
+		while (cmd[i] == '<' || cmd[i] == '>')
+			i++;
+		while (cmd[i] && cmd[i] == ' ')
+			i++;
+		if (!cmd[i])
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
+			if (cmd[0] == '<' || cmd[0] == '>')
+				ft_putstr_fd("\'newline\'\n", 2);
+			else
+				printf("\'%c\'\n", cmd[0]);
+			return (1);
+		}
+	}
+	return (0);
+}
+
 t_list	*parse_option(char *cmd)
 {
 	t_list	*list;
@@ -109,7 +148,7 @@ t_list	*parse_option(char *cmd)
 	int		i;
 
 	i = 0;
-	if (!ft_strcmp(cmd, ""))
+	if (cmd_chk(cmd))
 		return (NULL);
 	list = NULL;
 	while (1)

@@ -12,8 +12,50 @@
 
 #include "minishell.h"
 
+int	operator_exec1(t_list *list, t_shell *mini, char **envp)
+{
+	if (((t_ops *)(list->content))->type == '|')
+		return (operator_pipe(list, mini, envp));
+	else if (((t_ops *)(list->content))->type == '>')
+		return (redirect_output(list, mini, envp));
+	else if (((t_ops *)(list->content))->type == '}')
+		return (append_output(list, mini, envp));
+	else if (((t_ops *)(list->content))->type == '<')
+		return (redirect_input(list, mini, envp));
+	else if (((t_ops *)(list->content))->type == '{')
+		return (append_input(mini, list, envp));
+	else
+		return (-1);
+}
+
+int	test_input(t_list *list, t_shell *mini, char **envp)
+{
+	pid_t	pid;
+
+	mini->args = ((t_ops *)(list->content))->args;
+	pipe(((t_ops *)(list->content))->fds);
+	pid = fork();
+	if (pid == 0)
+	{
+		close(((t_ops *)(list->content))->fds[0]);
+		dup2(mini->prev_pipe, STDIN_FILENO);
+		dup2(((t_ops *)(list->content))->fds[1], 1);
+		operator_exec1(list, mini, envp);
+		exit(0);
+	}
+	wait(&pid);
+	close(((t_ops *)(list->content))->fds[1]);
+	mini->prev_pipe = ((t_ops *)(list->content))->fds[0];
+	return (0);
+}
+// -----------
 int	operator_exec(t_list *list, t_shell *mini, char **envp)
 {
+	if ((((t_ops *)(list->content))->type == '<' ||\
+	((t_ops *)(list->content))->type == '{') && \
+	(((t_ops *)(list->next->content))->type == '|' ||\
+	((t_ops *)(list->next->content))->type == '>'))
+		return (test_input(list, mini, envp));
 	if (((t_ops *)(list->content))->type == '|')
 		return (operator_pipe(list, mini, envp));
 	else if (((t_ops *)(list->content))->type == '>')
@@ -114,6 +156,7 @@ int	run_cmd1(t_shell *mini, t_list *list, char **envp)
 		{
 			dup2(mini->prev_pipe, STDIN_FILENO);
 			operator_exec(list, mini, envp);
+			//test_input(list, mini, envp);
 			if (((t_ops *)(list->content))->type != '|')
 				list = list->next;
 		}
@@ -124,7 +167,7 @@ int	run_cmd1(t_shell *mini, t_list *list, char **envp)
 		list = list->next;
 		mini->count = ft_lstsize(list);
 	}
-	if (list)
+	if (list && mini->count)
 	{
 		dup2(mini->prev_pipe, STDIN_FILENO);
 		mini->args = ((t_ops *)(list->content))->args;
