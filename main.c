@@ -1,9 +1,8 @@
 #include "minishell.h"
 
+//===========****===========****===========**//
 
-//===========****===========****===========****===========****===========****===========****===========****===========****===========****===========****===========****//
-
-char		*get_env(char **envp, char *option)
+char	*get_env(char **envp, char *option)
 {
 	int		i;
 	int		j;
@@ -23,13 +22,12 @@ char		*get_env(char **envp, char *option)
 	return (NULL);
 }
 
-void terminal_msg()
+void	terminal_msg(void)
 {
-	char buf[100];
-	char *msg;
+	char	buf[100];
+	char	*msg;
 
 	msg = getcwd(buf, 100);
-	//ft_putstr_fd(msg, 1);
 	ft_putstr_fd("minishell$ ", 1);
 }
 
@@ -39,23 +37,18 @@ void	exit_shell(void)
 	exit(0);
 }
 
-char *get_cmd()
+char	*get_cmd(void)
 {
-	int i;
-	char *cmd;
+	int		i;
+	char	*cmd;
 
 	i = 0;
-	/*if (get_next_line(1, &cmd) == -1)
-	{
-		ft_putstr_fd("\b   \b\bexit", 1);
-		exit_shell();
-	}*/
 	cmd = readline("minishell$ ");
 	if (!cmd)
 	{
 		printf("\x1b[2A");
 		printf("\x1b[11C");
-		printf("exit"); //\x1b1A 15C
+		printf("exit");
 		exit_shell();
 	}
 	return (cmd);
@@ -69,7 +62,7 @@ char	*get_path(char **strs)
 		return (strs[1] + 1);
 }
 
-int cmd_cd(char **args, char **envp)
+int	cmd_cd(char **args, char **envp)
 {
 	if (args[1][0] == '~')
 	{
@@ -79,15 +72,14 @@ int cmd_cd(char **args, char **envp)
 	}
 	if ((chdir(args[1])) == -1)
 		ft_putstr_fd("cd fail\n", 2);
-	//path_free(args);
 	return (0);
 }
 
-void		print_echo(char **str, int i)
+void	print_echo(char **str, int i)
 {
-	int		starts_qu;
-	int		ends_qu;
-	int		len;
+	int	starts_qu;
+	int	ends_qu;
+	int	len;
 
 	starts_qu = is_quotes(str[i][0]);
 	len = (int)ft_strlen(str[i]);
@@ -104,10 +96,10 @@ void		print_echo(char **str, int i)
 		ft_putchar_fd(' ', 1);
 }
 
-int cmd_echo(char **args, char **envp)
+int	cmd_echo(char **args, char **envp)
 {
-	int n_flag;
-	int i;
+	int	n_flag;
+	int	i;
 
 	i = 1;
 	if (!args[1])
@@ -116,8 +108,8 @@ int cmd_echo(char **args, char **envp)
 		return (0);
 	}
 	n_flag = 0;
-    if (args[1][0] == '$')
-        return(print_export(args[1], envp));
+	if (args[1][0] == '$')
+		return (print_export(args[1], envp));
 	if (args[1][0] == '-' && args[1][1] == 'n' && args[1][2] == '\0')
 		n_flag = 1;
 	if (n_flag)
@@ -131,9 +123,8 @@ int cmd_echo(char **args, char **envp)
 	}
 	return (0);
 }
-//==============*==============*==============*==============*==============*==============*==============*==============*==============*//
 
-//==============*==============*==============*==============*==============*==============*==============*==============*==============*//
+//==============*====//
 
 void	reset_fds(t_shell *mini)
 {
@@ -143,12 +134,12 @@ void	reset_fds(t_shell *mini)
 	dup2(mini->stdout, 1);
 }
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
-	char *cmd;
-	int i;
-	t_shell mini;
-	t_list *list;
+	char	*cmd;
+	int		i;
+	t_shell	mini;
+	t_list	*list;
 
 	i = 0;
 	mini.fds[0] = dup(STDIN_FILENO);
@@ -178,5 +169,4 @@ int main(int ac, char **av, char **envp)
 		if (i == -1)
 			break ;
 	}
-	//system("leaks a.out");
 }

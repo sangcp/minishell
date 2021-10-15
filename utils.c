@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/15 16:21:04 by sangcpar          #+#    #+#             */
+/*   Updated: 2021/10/15 16:21:06 by sangcpar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int is_quotes(char c)
+int	is_quotes(char c)
 {
 	if (c == '"' || c == '\'')
 		return (1);
 	return (0);
 }
 
-void path_free(char **str)
+void	path_free(char **str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -17,12 +29,13 @@ void path_free(char **str)
 	free(str);
 }
 
-void free_all(t_shell *mini, t_list *list)
+void	free_all(t_shell *mini, t_list *list)
 {
-	t_list *tlist;
-	int i = 0;
+	t_list	*tlist;
+	int	i;
 
 	(void)mini;
+	i = 0;
 	if (list == NULL)
 		return ;
 	tlist = list;

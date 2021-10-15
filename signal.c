@@ -1,16 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/15 16:23:59 by sangcpar          #+#    #+#             */
+/*   Updated: 2021/10/15 16:24:00 by sangcpar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void pipe_sighandler1(int sig)
+void	pipe_sighandler1(int sig)
 {
 	(void)sig;
 	rl_on_new_line();
 	rl_redisplay();
-	//ft_putstr_fd("\x1b[10C", 1);
-	/*if (sig == SIGQUIT)
-		ft_putstr_fd("", 1);*/
 }
 
-void pipe_sighandler2(int sig)
+void	pipe_sighandler2(int sig)
 {
 	if (sig == SIGQUIT)
 	{
@@ -19,19 +28,11 @@ void pipe_sighandler2(int sig)
 	}
 }
 
-void sighandler1(int sig)
+void	sighandler1(int sig)
 {
-	int i = 0;
-
 	if (sig == SIGINT)
 	{
-		//ft_putstr_fd("\x1b[12C", 1);
-		/*while (i++ < 3)
-			ft_putstr_fd("\x1b[1C", 1);*/
-		//ft_putstr_fd("\b\b  \b\b", 1);
-		ft_putstr_fd("\n", 1); //\x1b1A 15C
-        //ft_putstr_fd("bash-3.2$ ", 1);
-		//terminal_msg();
+		ft_putstr_fd("\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
@@ -39,7 +40,7 @@ void sighandler1(int sig)
 	}
 }
 
-void sighandler2(int sig)
+void	sighandler2(int sig)
 {
 	if (sig == SIGINT)
 	{

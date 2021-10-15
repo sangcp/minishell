@@ -15,7 +15,7 @@ void	plus_row(char *str, t_ef *ef, char c)
 
 void	plus_i(char *str, t_ef *ef)
 {
-	while (str[ef->i] && (str[ef->i] != '\''
+	while (str[ef->i] && (str[ef->i] != '\''\
 		|| str[ef->i] != '\\' || str[ef->i] != '\"'))
 		ef->i++;
 }

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int quote_skip(char *cmd, int i, char q)
+int	quote_skip(char *cmd, int i, char q)
 {
 	while (1)
 	{
@@ -62,7 +62,8 @@ char	**parse_args(char *line, t_ops *ops)
 			line++;
 		if (!line[0])
 			break ;
-		if ((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || (line[i] != ' ' && line[i + 1] == ' ')) && i > 0)
+		if ((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
+		(line[i] != ' ' && line[i + 1] == ' ')) && i > 0)
 		{
 			if (line[0] == '\"' || line[0] == '\'')
 			{
@@ -83,10 +84,9 @@ char	**parse_args(char *line, t_ops *ops)
 
 t_ops	*set_ops(char *cmd, int i)
 {
-	t_ops *ops;
-	int j = 0;
+	t_ops	*ops;
 
-	ops = (t_ops*)malloc(sizeof(t_ops));
+	ops = (t_ops *)malloc(sizeof(t_ops));
 	if (cmd[i] != '\0')
 		ops->operation = ft_substr(cmd, 0, i - 1);
 	else
@@ -99,16 +99,14 @@ t_ops	*set_ops(char *cmd, int i)
 	else
 		ops->type = cmd[i];
 	ops->next = NULL;
-	/*while (ops->args[j])
-		printf("(%s) (%c) (%c)\n", ops->args[j++], ops->type, cmd[i]);*/
 	return (ops);
 }
 
-t_list *parse_option(char *cmd)
+t_list	*parse_option(char *cmd)
 {
-	t_list *list;
-	t_ops *ops;
-	int i;
+	t_list	*list;
+	t_ops	*ops;
+	int		i;
 
 	i = 0;
 	if (!ft_strcmp(cmd, ""))
@@ -124,24 +122,12 @@ t_list *parse_option(char *cmd)
 			ft_lstadd_back(&list, ft_lstnew(ops));
 			if (!cmd[i])
 				return (list);
-			cmd += (cmd[i] && cmd[i + 1] == '>' ?  1 : 0);
-			cmd += (cmd[i] && cmd[i + 1] == '<' ?  1 : 0);
+			if (cmd[i] && (cmd[i + 1] == '>' || cmd[i + 1] == '<'))
+				cmd += 1;
 			cmd += i + 1;
 			i = 0;
 		}
 		i++;
 	}
-	return (list);
-}
-
-t_list *parse(t_shell *mini, char *cmd)
-{
-	t_list *list;
-	t_list *tlist;
-	int i = 0;
-
-	(void)mini;
-	list = parse_option(cmd);
-	tlist = list;
 	return (list);
 }

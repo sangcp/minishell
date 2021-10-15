@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 int	operator_pipe(t_list *list, t_shell *mini, char **envp)
 {
 	pid_t	pid;
@@ -93,11 +92,13 @@ int	append_input(t_shell *mini, t_list *list, char **envp)
 	char	*str;
 	int		fd;
 
-	fd = open(((t_ops *)(list->next->content))->args[0], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	fd = open(((t_ops *)(list->next->content))->args[0], \
+	O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (fd < 0)
 		exit(1);
 	str = readline("> ");
-	while (str != NULL && ft_strcmp(str, ((t_ops *)(list->next->content))->args[0]))
+	while (str != NULL && ft_strcmp(str, \
+	((t_ops *)(list->next->content))->args[0]))
 	{
 		write(fd, str, ft_strlen(str));
 		write(fd, "\n", 1);

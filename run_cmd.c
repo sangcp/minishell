@@ -11,91 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-/*
-int append_input(t_list *list, t_shell *mini, char **envp)
-{
-	char **cmd;
-	char *cm;
-	int i;
-	char *exit_c;
-	(void)envp;
-	(void)mini;
-	int fd;
-
-	
-	cmd = (char**)malloc(sizeof(char*) * 99);
-	cmd[0] = ft_strdup(((t_ops *)(list->content))->args[0]);
-	exit_c = ((t_ops *)(list->next->content))->args[0];
-	i = 1;
-	while (1)
-	{
-		cm = readline("heredoc> ");
-		if (!(ft_strcmp(exit_c, cm)))
-			break ;
-		cmd[i] = ft_strdup(cm);
-		printf("%s| %s| %s|\n", cm, cmd[i], exit_c);
-		i++;
-	}
-	((t_ops *)(list->content))->args = cmd;
-	i = 0;
-	fd = open(((t_ops *)(list->content))->args[0], O_RDONLY);
-	while (((t_ops *)(list->content))->args[i])
-		printf("%s\n", ((t_ops *)(list->content))->args[i++]);
-	((t_ops *)(list->content))->type = ' ';
-	mini->count--;
-	return (0);
-}*/
-/*
-int	append_here(t_list *list, t_shell *mini, char **envp)
-{
-	int		fd;
-	char	*filename;
-	(void)list;
-
-	mini->fds[0] = dup(STDIN_FILENO);
-	filename = ((t_ops *)(list->next->content))->args[0];
-	printf("na = %s\n", filename);
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-	{
-		printf("%s: no such file or directory\n", filename);
-		return (-1);
-	}
-	dup2(mini->fds[0], STDIN_FILENO);
-	mini->rv = exec_cmp(mini, ((t_ops *)(list->content))->args, envp);
-	close(mini->fds[0]);
-	dup2(mini->fds[0], STDIN_FILENO);
-	return (0);
-}
-
-static void	write_heredoc(t_shell *mini)
-{
-	char	*str;
-	(void)mini;
-	int		fd;
-	//char *line;
-	//char buf[42];
-
-	fd = open(mini->args[0], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	printf("%s %d\n", mini->args[0], fd);
-	if (fd < 0)
-		exit(1);
-	str = readline("heredoc> ");
-	while (str != NULL && ft_strcmp(str, mini->args[0]))
-	{
-		write(fd, str, ft_strlen(str));
-		write(fd, "\n", 1);
-		free(str);
-		str = readline("heredoc> ");
-	}
-	close(fd);
-	fd = open(mini->args[0], O_RDONLY);
-	//get_next_line(fd, &line);
-	read(fd, buf, 100);
-	printf("a = %s b = %s\n", mini->args[0], buf);
-	free(str);
-	close(fd);
-}*/
 
 int	operator_exec(t_list *list, t_shell *mini, char **envp)
 {
@@ -113,13 +28,12 @@ int	operator_exec(t_list *list, t_shell *mini, char **envp)
 		return (-1);
 }
 
-int run_cmd2(t_shell *mini, char **envp)
+int	run_cmd2(t_shell *mini, char **envp)
 {
-	char **path;
-	//char **strs;
-	char *tmp;
-	pid_t pid;
-	int i;
+	char	**path;
+	char	*tmp;
+	pid_t	pid;
+	int		i;
 
 	pid = fork();
 	signal(SIGINT, sighandler2);
@@ -145,16 +59,15 @@ int run_cmd2(t_shell *mini, char **envp)
 		ft_putstr_fd(mini->args[0], STDERR_FILENO);
 		write(STDERR_FILENO, "\n", 1);
 		path_free(path);
-		//path_free(strs);
 		return (-1);
 	}
 	wait(&pid);
 	return (0);
 }
 
-int cmd_pwd(char **args, char **envp)
+int	cmd_pwd(char **args, char **envp)
 {
-	char buf[1000];
+	char	buf[1000];
 
 	getcwd(buf, 1000);
 	printf("%s\n", buf);
@@ -178,26 +91,20 @@ int	exec_cmp(t_shell *mini, char **args, char **envp)
 		return (cmd_cd(args, envp));
 	if (!(ft_strncmp(args[0], "echo", 4)))
 		return (cmd_echo(args, envp));
-    if (!(ft_strncmp(args[0], "export", 5)))
-    {
-        envp = cmd_export(args, envp);
-        return (0);
-    }
-    if (!(ft_strncmp(args[0], "env", 3)))
-        return (cmd_env(args, envp));
+	if (!(ft_strncmp(args[0], "export", 5)))
+	{
+		envp = cmd_export(args, envp);
+		return (0);
+	}
+	if (!(ft_strncmp(args[0], "env", 3)))
+		return (cmd_env(args, envp));
 	if (!(ft_strncmp(args[0], "pwd", 3)))
-        return (cmd_pwd(args, envp));
+		return (cmd_pwd(args, envp));
 	return (run_cmd2(mini, envp));
 }
 
-int run_cmd1(t_shell *mini, t_list *list, char **envp)
+int	run_cmd1(t_shell *mini, t_list *list, char **envp)
 {
-	/*if (((t_ops *)(list->content))->type == '{')
-	{
-		append_input(mini, list, envp);
-		list = list->next;
-		mini->count = ft_lstsize(list);
-	}*/
 	while (mini->count > 1)
 	{
 		mini->args = ((t_ops *)(list->content))->args;
