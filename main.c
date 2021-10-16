@@ -1,6 +1,24 @@
 #include "minishell.h"
 
 //===========****===========****===========**//
+void put_evs(t_shell *mini, char **envp)
+{
+    int i;
+    int len;
+    i = 0;
+    len = 0;
+    while (envp[i])
+        i++;
+    mini->evs = (char**)malloc(sizeof(char *) * i);
+    i= 0;
+    while (envp[i])
+    {
+        len = ft_strlen(envp[i]);
+        mini->evs[i] = (char *)malloc(sizeof(char) * len);
+        mini->evs[i] = envp[i];
+        i++;
+    }
+}
 
 char	*get_env(char **envp, char *option)
 {
@@ -147,6 +165,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	(void)ac;
 	(void)envp;
+	put_evs(&mini, envp);
 	init_term(&mini);
 	while (1)
 	{
