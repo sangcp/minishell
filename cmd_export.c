@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 16:47:23 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/15 16:47:24 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/16 19:17:49 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,36 +118,35 @@ char	**desending_envp(char **envp)
 		}
 		i++;
 	}
+	i = 0;
 	return (desen_envp);
 }
 
-char	**cmd_export(char **args, char **envp)
+void	cmd_export(t_shell *mini, char **args)
 {
 	int	i;
-	//char **desen_envp;
 
-	//desen_envp = desending_envp(envp);
-	if (!(ft_strcmp(args[0], "export")))
+	mini->c_evs = desending_envp(mini->c_evs);
+	if (!(ft_strcmp(args[0], "export")) && !args[1])
 	{
 		i = 0;
-		while (envp[i])
+		while (mini->c_evs[i])
 		{
-			printf("declare -x %s\n", envp[i]);
+			printf("declare -x %s\n", mini->c_evs[i]);
 			i++;
 		}
 	}
 	else if (args[1][0] == '$')
 	{
 		i = 0;
-		while (envp[i])
+		while (mini->c_evs[i])
 		{
-			printf("declare -x %s\n", envp[i]);
+			printf("declare -x %s\n", mini->c_evs[i]);
 			i++;
 		}
 	}
 	else
-		envp = plus_line(envp, args[1]);
-	return (envp);
+		mini->c_evs = plus_line(mini->c_evs, args[1]);
 }
 
 int	find_str_len(char *str)

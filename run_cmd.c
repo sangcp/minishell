@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 10:03:38 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/14 14:54:18 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/16 18:23:23 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,13 @@ int	run_cmd2(t_shell *mini, char **envp)
 	if (pid == 0)
 	{
 		path = ft_split2(get_env(envp, "PATH"), ':');
-		/*if (!ft_strncmp(mini->args, "/bin/", 5))
-			*strs = *strs + 5;*/
+		if (!ft_strncmp(mini->args[0], "/bin/", 5))
+		{
+			tmp = ft_strdup(*mini->args + 5);
+			free(mini->args[i]);
+			mini->args[i] = ft_strdup(tmp);
+			free(tmp);
+		}
 		while (path[i])
 		{
 			tmp = ft_strjoin(path[i], "/");
@@ -137,7 +142,7 @@ int	exec_cmp(t_shell *mini, char **args, char **envp)
 		return (cmd_echo(args, envp));
 	if (!(ft_strncmp(args[0], "export", 5)))
 	{
-		envp = cmd_export(args, envp);
+		cmd_export(mini, args);
 		return (0);
 	}
 	if (!(ft_strncmp(args[0], "env", 3)))

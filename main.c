@@ -10,12 +10,15 @@ void put_evs(t_shell *mini, char **envp)
     while (envp[i])
         i++;
     mini->evs = (char**)malloc(sizeof(char *) * i);
+	mini->c_evs = (char**)malloc(sizeof(char *) * i);
     i= 0;
     while (envp[i])
     {
         len = ft_strlen(envp[i]);
         mini->evs[i] = (char *)malloc(sizeof(char) * len);
         mini->evs[i] = envp[i];
+		mini->c_evs[i] = (char *)malloc(sizeof(char) * len);
+        mini->c_evs[i] = envp[i];
         i++;
     }
 }
@@ -181,7 +184,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	(void)ac;
 	(void)envp;
-	//put_evs(&mini, envp);
+	put_evs(&mini, envp);
 	init_term(&mini);
 	while (1)
 	{
@@ -198,8 +201,8 @@ int	main(int ac, char **av, char **envp)
 		mini.prev_pipe = STDIN_FILENO;
 		mini.count = ft_lstsize(list);
 		restore_term(&mini);
-		/*while (((t_ops *)(list->content))->args[i])
-			printf("(%s)\n", ((t_ops *)(list->content))->args[i++]);*/
+		while (((t_ops *)(list->content))->args[i])
+			printf("(%s)\n", ((t_ops *)(list->content))->args[i++]);
 		i = run_cmd1(&mini, list, envp);
 		free_all(&mini, list);
 		reset_fds(&mini);

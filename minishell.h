@@ -37,6 +37,7 @@ typedef struct s_shell
 	t_list			*ops;
 	char			**args;
 	char			**evs;
+	char			**c_evs;
 	int				rv;
 	int				fds[2];
 	int				prev_pipe;
@@ -62,7 +63,7 @@ char *get_cmd();
 int cmd_cd(char **args, char **envp);
 int cmd_echo(char **args, char **envp);
 
-char **cmd_export(char **args, char **envp);
+void cmd_export(t_shell *mini, char **args);
 int cmd_env(char **args, char **envp);
 char **plus_line(char **env, char *new_env);
 int    print_export(char *str, char **envp);
