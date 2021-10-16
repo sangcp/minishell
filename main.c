@@ -110,35 +110,52 @@ void	print_echo(char **str, int i)
 		ft_putstr_fd(str[i] + 1, 1);
 	else
 		ft_putstr_fd(str[i], 1);
-	if (str[i + 1])
-		ft_putchar_fd(' ', 1);
 }
 
 int	cmd_echo(char **args, char **envp)
 {
+	char *tmp;
 	int	n_flag;
 	int	i;
+	int j;
 
 	i = 1;
+	j = 0;
 	if (!args[1])
 	{
 		ft_putchar_fd('\n', 1);
 		return (0);
 	}
 	n_flag = 0;
-	if (args[1][0] == '$')
-		return (print_export(args[1], envp));
+	/*if (args[1][0] == '$')
+		return (print_export(args[1], envp));*/
 	if (args[1][0] == '-' && args[1][1] == 'n' && args[1][2] == '\0')
 		n_flag = 1;
 	if (n_flag)
 		i++;
 	while (args[i])
 	{
+		if (args[i][0] == '$')
+		{
+			tmp = get_env(envp, args[i] + 1);
+			ft_putstr_fd(tmp, 1);
+		}
+		else
+			print_echo(args, i);
+		if (args[i + 1])
+			ft_putchar_fd(' ', 1);
+		i++;
+		j++;
+	}
+	if (!n_flag)
+			ft_putchar_fd('\n', 1);
+	/*while (args[i])
+	{
 		print_echo(args, i);
 		if (!n_flag && !args[i + 1])
 			ft_putchar_fd('\n', 1);
 		i++;
-	}
+	}*/
 	return (0);
 }
 
@@ -159,16 +176,16 @@ int	main(int ac, char **av, char **envp)
 	t_shell	mini;
 	t_list	*list;
 
-	i = 0;
 	mini.fds[0] = dup(STDIN_FILENO);
 	mini.fds[1] = dup(STDOUT_FILENO);
 	(void)av;
 	(void)ac;
 	(void)envp;
-	put_evs(&mini, envp);
+	//put_evs(&mini, envp);
 	init_term(&mini);
 	while (1)
 	{
+		i = 0;
 		//terminal_msg();
 		signal(SIGINT, &sighandler1);
 		//signal(SIGQUIT, &pipe_sighandler1);
@@ -181,6 +198,8 @@ int	main(int ac, char **av, char **envp)
 		mini.prev_pipe = STDIN_FILENO;
 		mini.count = ft_lstsize(list);
 		restore_term(&mini);
+		/*while (((t_ops *)(list->content))->args[i])
+			printf("(%s)\n", ((t_ops *)(list->content))->args[i++]);*/
 		i = run_cmd1(&mini, list, envp);
 		free_all(&mini, list);
 		reset_fds(&mini);

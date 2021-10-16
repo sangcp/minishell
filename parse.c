@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/02 03:15:45 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/02 03:15:46 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/16 16:27:26 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ char	**parse_args(char *line, t_ops *ops)
 			i = -1;
 		}
 		i++;
+		ops->in_quotes = 0;
 	}
 	return (list_to_arr(list));
 }
