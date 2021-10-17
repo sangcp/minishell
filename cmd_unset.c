@@ -6,18 +6,24 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/17 08:21:17 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/17 08:21:18 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/17 13:48:56 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-static void	replace_array(char **ret, char **evs, char *arg)
+char	**rm_env(char **evs, char *arg)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
+	char	**ret;
 
+	i = 0;
+	while (evs[i])
+		i++;
+	ret = malloc((sizeof(char *)) * i);
+	if (!ret)
+		return (NULL);
 	i = 0;
 	while (*evs)
 	{
@@ -32,22 +38,7 @@ static void	replace_array(char **ret, char **evs, char *arg)
 		evs++;
 	}
 	ret[i] = NULL;
-}
-
-char	**rm_env(char **evs, char *arg)
-{
-	int		i;
-	char	**ret;
-
-	i = 0;
-	while (evs[i])
-		i++;
-	ret = malloc((sizeof(char *)) * i);
-	if (!ret)
-		return (NULL);
-	i = 0;
-	replace_array(ret, evs, arg);
-	i = 0;
+	/*i = 0;
 	if (evs)
 	{
 		while (evs[i] != NULL)
@@ -56,7 +47,7 @@ char	**rm_env(char **evs, char *arg)
 			i++;
 		}
 		free(evs);
-	}
+	}*/
 	return (ret);
 }
 
