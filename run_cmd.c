@@ -140,7 +140,7 @@ int	exec_cmp(t_shell *mini, char **args, char **envp)
 		return (cmd_cd(args, envp));
 	if (!(ft_strncmp(args[0], "echo", 4)))
 		return (cmd_echo(args, envp));
-	if (!(ft_strncmp(args[0], "export", 5)))
+	if (!(ft_strncmp(args[0], "export", 7)))
 	{
 		cmd_export(mini, args);
 		return (0);
@@ -149,6 +149,8 @@ int	exec_cmp(t_shell *mini, char **args, char **envp)
 		return (cmd_env(args, envp));
 	if (!(ft_strncmp(args[0], "pwd", 3)))
 		return (cmd_pwd(args, envp));
+	if (!(ft_strncmp(args[0], "unset", 5)))
+		return (cmd_unset(mini, envp));
 	return (run_cmd2(mini, envp));
 }
 

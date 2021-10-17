@@ -115,4 +115,7 @@ int	append_input(t_shell *mini, t_list *list, char **envp);
 void	init_term(t_shell *mini);
 void	restore_term(t_shell *mini);
 
+// --- cmd_unset.c --//
+int cmd_unset(t_shell *mini, char **envp);
+
 #endif

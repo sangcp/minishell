@@ -26,7 +26,8 @@ SRCS = cmd_env.c\
 		run_cmd.c\
 		signal.c\
 		termios.c\
-		utils.c
+		utils.c\
+		cmd_unset.c
 
 SRCDIR = ./
 SRCNAMES = $(shell ls $(SRCDIR) | grep -E ".+\.c")
@@ -41,10 +42,12 @@ LIBFT = ./libft/libft.a
 LIBINC = ./libft/
 
 # Optimization and Compiler flags and commands
-CC = gcc 
+CC = gcc -g
 CFLAGS = -Wall -Werror -Wextra
-READ = -lreadline -L/Users/sangcpar/.brew/opt/readline/lib -I/Users/sangcpar/.brew/opt/readline/include
-READ2 = -I/Users/sangcpar/.brew/opt/readline/include
+#READ = -lreadline -L/Users/sangcpar/.brew/opt/readline/lib -I/Users/sangcpar/.brew/opt/readline/include
+#READ2 = -I/Users/sangcpar/.brew/opt/readline/include
+READ = -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
+READ2 = -I/opt/homebrew/opt/readline/include
 
 # Debugging flags
 DEBUG = -g
