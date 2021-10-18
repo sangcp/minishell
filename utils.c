@@ -41,13 +41,16 @@ void	free_all(t_shell *mini, t_list *list)
 	tlist = list;
 	while (tlist->next)
 	{
-		while (((t_ops *)(tlist->content))->args[i])
+		if (((t_ops *)(tlist->content))->args)
 		{
-			free(((t_ops *)(tlist->content))->args[i]);
-			i++;
+			while (((t_ops *)(tlist->content))->args[i])
+			{
+				free(((t_ops *)(tlist->content))->args[i]);
+				i++;
+			}
+			free(((t_ops *)(tlist->content))->args);
 		}
 		free(((t_ops *)(tlist->content))->operation);
-		free(((t_ops *)(tlist->content))->args);
 		free(((t_ops *)(tlist->content)));
 		free(tlist);
 		tlist = tlist->next;

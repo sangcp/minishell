@@ -95,13 +95,14 @@ char	**desending_envp(char **envp)
 	i = 0;
 	while (envp[i])
 		i++;
-	desen_envp = (char **)malloc(sizeof(char *) * i);
+	desen_envp = (char **)malloc(sizeof(char *) * (i + 1));
 	i = 0;
 	while (envp[i])
 	{
-		desen_envp[i] = envp[i];
+		desen_envp[i] = ft_strdup(envp[i]);
 		i++;
 	}
+	desen_envp[i] = NULL;
 	i = 0;
 	while (desen_envp[i])
 	{
@@ -119,6 +120,12 @@ char	**desending_envp(char **envp)
 		i++;
 	}
 	i = 0;
+	if (envp)
+	{
+		while (envp[i])
+			free(envp[i++]);
+		free(envp);
+	}
 	return (desen_envp);
 }
 
@@ -132,9 +139,10 @@ void	cmd_export(t_shell *mini, char **args)
 		i = 0;
 		while (mini->c_evs[i])
 		{
-			printf("declare -x %s\n", mini->c_evs[i]);
+			printf("declare -x (%s)\n", mini->c_evs[i]);
 			i++;
 		}
+		printf("fin\n");
 	}
 	else if (args[1][0] == '$')
 	{

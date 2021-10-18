@@ -16,38 +16,43 @@ char	**rm_env(char **evs, char *arg)
 {
 	int		i;
 	int		j;
+	int 	k;
 	char	**ret;
+	char	**tmp;
 
+	tmp = evs;
 	i = 0;
+	k = 0;
 	while (evs[i])
 		i++;
 	ret = malloc((sizeof(char *)) * i);
 	if (!ret)
 		return (NULL);
 	i = 0;
-	while (*evs)
+	while (evs[k])
 	{
 		j = 0;
-		while ((*evs)[j] != '=')
+		while (evs[k][j] && evs[k][j] != '=')
 			j++;
-		if (ft_strncmp(*evs, arg, j + 1) != '=')
+		if (ft_strncmp(evs[k], arg, j + 1) != '=')
 		{
-			ret[i] = ft_strdup(*evs);
+			ret[i] = ft_strdup(evs[k]);
+			printf("%s\n", evs[k]);
 			i++;
 		}
-		evs++;
+		k++;
 	}
 	ret[i] = NULL;
-	/*i = 0;
-	if (evs)
+	i = 0;
+	if (tmp)
 	{
-		while (evs[i] != NULL)
+		while (tmp[i] != NULL)
 		{
-			free(evs[i]);
+			free(tmp[i]);
 			i++;
 		}
-		free(evs);
-	}*/
+		free(tmp);
+	}
 	return (ret);
 }
 

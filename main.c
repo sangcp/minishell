@@ -1,13 +1,13 @@
 #include "minishell.h"
 
 //===========****===========****===========**//
-void put_evs(t_shell *mini, char **envp)
+char **put_evs(t_shell *mini, char **envp)
 {
     int i;
-	int len;
-	//char **ret;
+	//int len;
+	char **ret;
 
-    i = 0;
+    /*i = 0;
     while (envp[i])
         i++;
     mini->evs = (char**)malloc(sizeof(char *) * i);
@@ -16,13 +16,13 @@ void put_evs(t_shell *mini, char **envp)
     while (envp[i])
     {
         len = ft_strlen(envp[i]);
-		mini->evs[i] = (char *)malloc(sizeof(char) * len);
-		mini->evs[i] = envp[i];
-		mini->c_evs[i] = (char *)malloc(sizeof(char) * len);
-        mini->c_evs[i] = envp[i];
+		//mini->evs[i] = (char *)malloc(sizeof(char) * len);
+		mini->evs[i] = ft_strdup(envp[i]);
+		//mini->c_evs[i] = (char *)malloc(sizeof(char) * len);
+        mini->c_evs[i] = ft_strdup(envp[i]);
         i++;
-    }
-/*
+    }*/
+	(void)mini;
 	i = 0;
 	while (envp[i])
 		i++;
@@ -36,7 +36,7 @@ void put_evs(t_shell *mini, char **envp)
 		i++;
 	}
 	ret[i] = NULL;
-	return (ret);*/
+	return (ret);
 }
 
 char	*get_env(char **envp, char *option)
@@ -199,9 +199,9 @@ int	main(int ac, char **av, char **envp)
 	mini.fds[1] = dup(STDOUT_FILENO);
 	(void)av;
 	(void)ac;
-	put_evs(&mini, envp);
-	/*mini.evs = put_evs(envp);
-	mini.c_evs = put_evs(envp);*/
+	//put_evs(&mini, envp);
+	mini.evs = put_evs(&mini, envp);
+	mini.c_evs = put_evs(&mini, envp);
 	init_term(&mini);
 	while (1)
 	{
