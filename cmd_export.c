@@ -139,7 +139,7 @@ void	cmd_export(t_shell *mini, char **args)
 		i = 0;
 		while (mini->c_evs[i])
 		{
-			printf("declare -x (%s)\n", mini->c_evs[i]);
+			printf("declare -x %s\n", mini->c_evs[i]);
 			i++;
 		}
 		printf("fin\n");

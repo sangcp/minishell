@@ -37,7 +37,6 @@ char	**rm_env(char **evs, char *arg)
 		if (ft_strncmp(evs[k], arg, j + 1) != '=')
 		{
 			ret[i] = ft_strdup(evs[k]);
-			printf("%s\n", evs[k]);
 			i++;
 		}
 		k++;
