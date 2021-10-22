@@ -45,23 +45,41 @@ char	*change_env(char *new_env)
 char	**plus_line(char **env, char *new_env)
 {
 	char	**envp;
+	char	*tmp;
 	//char	*new_change_env;
 	int		i;
+	int		j;
+	int		k;
 
 	//new_change_env = change_env(new_env);
 	i = 0;
-	while (env[i])
+	j = -1;
+	while (new_env[i] && new_env[i] != '=')
 		i++;
-	envp = (char **)malloc(sizeof(char *) * (i + 2));
+	tmp = ft_substr(new_env, 0, i);
 	i = 0;
 	while (env[i])
 	{
-		envp[i] = ft_strdup(env[i]);
+		if (!ft_strncmp(tmp, env[i], ft_strlen(tmp)))
+			j = i;
 		i++;
 	}
-	envp[i] = ft_strdup(new_env);
-	envp[++i] = NULL;
+	printf("(%d)\n", j);
+	if (j)
+		i--;
+	envp = (char **)malloc(sizeof(char *) * (i + 2));
+	i = 0;
+	k = 0;
+	while (env[i])
+	{
+		if (i != j)
+			envp[k++] = ft_strdup(env[i]);
+		i++;
+	}
+	envp[k] = ft_strdup(new_env);
+	envp[++k] = NULL;
 	path_free(env);
+	free(tmp);
 	return (envp);
 }
 

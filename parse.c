@@ -155,6 +155,7 @@ t_list	*parse_option(char *cmd)
 	t_list	*list;
 	t_ops	*ops;
 	int		i;
+	int		j;
 
 	i = 0;
 	if (cmd_chk(cmd))
@@ -162,10 +163,18 @@ t_list	*parse_option(char *cmd)
 	list = NULL;
 	while (1)
 	{
+		j = 1;
 		if (cmd[i] == '\'' || cmd[i] == '\"')
 			i = quote_skip(cmd, i, cmd[i]);
 		else if (!cmd[i] || ft_strchr(";|<>", cmd[i]))
 		{
+			if (cmd[i])
+			{
+				while (cmd[i + j] && cmd[i + j] == ' ')
+					j++;
+				if (!cmd[i + j])
+					return (NULL);
+			}
 			ops = set_ops(cmd, i);
 			ft_lstadd_back(&list, ft_lstnew(ops));
 			if (!cmd[i])

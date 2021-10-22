@@ -143,7 +143,7 @@ void	print_echo(char **str, int i)
 	}
 }
 
-int	cmd_echo(t_shell *mini, char **args, char **envp)
+int	cmd_echo(t_shell *mini, t_list *list, char **args, char **envp)
 {
 	(void)mini;
 	//char *tmp;
@@ -182,7 +182,7 @@ int	cmd_echo(t_shell *mini, char **args, char **envp)
 		}
 		else*/
 		print_echo(args, i);
-		if (args[i + 1] && mini->q_c[i] != '0')
+		if (args[i + 1] && ((t_ops*)(list->content))->q_chk[i] != '0')
 			ft_putchar_fd(' ', 1);
 		i++;
 		j++;
@@ -222,7 +222,8 @@ char	**q_del(t_shell *mini, t_list *list, char **args)
 	while (args[i])
 		i++;
 	tmp = (char **)malloc(sizeof(char*) * (i + 1));
-	mini->q_c = (char *)malloc(sizeof(char) * (i + 1));
+	((t_ops*)(list->content))->q_chk = (char *)malloc(sizeof(char) * (i + 1));
+	((t_ops*)(list->content))->q_chk[i] = '\0';
 	line = ((t_ops*)(list->content))->operation;
 	i = 0;
 	while (args[i])
@@ -232,7 +233,7 @@ char	**q_del(t_shell *mini, t_list *list, char **args)
 			line++;
 		if ((line[ft_strlen(args[i]) - 1] == '\"' || line[ft_strlen(args[i]) - 1] == '\'')\
 		&& line[ft_strlen(args[i])] != ' ')
-			mini->q_c[i] = '0';
+			((t_ops*)(list->content))->q_chk[i] = '0';
 		if (args[i][0] == '\"' && args[i][1] == '$')
 			tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 2));
 		else if (args[i][0] == '\'' && args[i][1] == '$')
@@ -261,10 +262,10 @@ void q_chk(t_shell *mini, t_list *list)
 	tlist = list;
 	while (tlist->next)
 	{
-		((t_ops*)(tlist->content))->args = q_del(mini, list, ((t_ops*)(tlist->content))->args);
+		((t_ops*)(tlist->content))->args = q_del(mini, tlist, ((t_ops*)(tlist->content))->args);
 		tlist = tlist->next;
 	}
-	((t_ops*)(tlist->content))->args = q_del(mini, list, ((t_ops*)(tlist->content))->args);
+	((t_ops*)(tlist->content))->args = q_del(mini, tlist, ((t_ops*)(tlist->content))->args);
 }
 
 int	main(int ac, char **av, char **envp)

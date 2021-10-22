@@ -24,7 +24,7 @@ int	operator_pipe(t_list *list, t_shell *mini, char **envp)
 		close(((t_ops *)(list->content))->fds[0]);
 		dup2(mini->prev_pipe, STDIN_FILENO);
 		dup2(((t_ops *)(list->content))->fds[1], 1);
-		mini->rv = exec_cmp(mini, mini->args, envp);
+		mini->rv = exec_cmp(mini, mini->args, list, envp);
 		exit(0);
 	}
 	wait(&pid);
@@ -44,7 +44,7 @@ int	redirect_output(t_list *list, t_shell *mini, char **envp)
 	if (fd == -1)
 		return (-1);
 	dup2(fd, STDOUT_FILENO);
-	mini->rv = exec_cmp(mini, mini->args, envp);
+	mini->rv = exec_cmp(mini, mini->args, list, envp);
 	dup2(mini->fds[0], STDOUT_FILENO);
 	close(fd);
 	return (0);
@@ -61,7 +61,7 @@ int	append_output(t_list *list, t_shell *mini, char **envp)
 	if (fd == -1)
 		return (-1);
 	dup2(fd, STDOUT_FILENO);
-	mini->rv = exec_cmp(mini, mini->args, envp);
+	mini->rv = exec_cmp(mini, mini->args, list, envp);
 	dup2(mini->fds[0], STDOUT_FILENO);
 	close(fd);
 	return (0);
@@ -81,7 +81,7 @@ int	redirect_input(t_list *list, t_shell *mini, char **envp)
 		return (-1);
 	}
 	dup2(fd, STDIN_FILENO);
-	mini->rv = exec_cmp(mini, mini->args, envp);
+	mini->rv = exec_cmp(mini, mini->args, list, envp);
 	dup2(mini->fds[0], STDIN_FILENO);
 	close(fd);
 	return (0);

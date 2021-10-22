@@ -26,30 +26,30 @@ int	find_equal(char *cmd)
 	return (0);
 }
 
-int	cmd_env(char **args, char **envp)
+int	cmd_env(char **args, t_shell *mini)
 {
 	int	i;
 
 	i = 0;
 	if (!(ft_strcmp(args[0], "env")))
 	{
-		while (envp[i])
+		while (mini->c_evs[i])
 		{
-			printf("%s\n", envp[i]);
+			printf("%s\n", mini->c_evs[i]);
 			i++;
 		}
 	}
 	else
 	{
-		while (envp[i])
+		while (mini->c_evs[i])
 		{
-			printf("%s\n", envp[i]);
+			printf("%s\n", mini->c_evs[i]);
 			i++;
 		}
-		if (find_equal(args[1]))
-			printf("%s\n", args[1]);
+		if (find_equal(mini->c_evs[1]))
+			printf("%s\n", mini->c_evs[1]);
 		else
-			printf("env : %s: No such file or directory\n", args[1]);
+			printf("env : %s: No such file or directory\n", mini->c_evs[1]);
 	}
 	return (1);
 }

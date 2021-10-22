@@ -18,6 +18,8 @@ char		*ft_strchr(const char *s, int c)
 	char	find;
 
 	i = 0;
+	if (!s)
+		return (NULL);
 	find = (unsigned char)c;
 	while (s[i])
 	{

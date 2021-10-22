@@ -64,10 +64,10 @@ char		*get_env(char **envp, char *option);
 char *get_cmd();
 
 int cmd_cd(char **args, char **envp);
-int cmd_echo(t_shell *mini, char **args, char **envp);
+int cmd_echo(t_shell *mini, t_list *list, char **args, char **envp);
 
 void cmd_export(t_shell *mini, char **args);
-int cmd_env(char **args, char **envp);
+int cmd_env(char **args, t_shell *mini);
 char **plus_line(char **env, char *new_env);
 int    print_export(char *str, char **envp);
 
@@ -105,7 +105,7 @@ t_list *parse_option(char *cmd);
 
 // ----- run_cmd.c --- //
 int run_cmd1(t_shell *mini, t_list *list, char **envp);
-int	exec_cmp(t_shell *mini, char **args, char **envp);
+int	exec_cmp(t_shell *mini, char **args, t_list *list, char **envp);
 
 // ----- operator.c ---//
 int	redirect_input(t_list *list, t_shell *shell, char **envp);
