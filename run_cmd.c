@@ -139,7 +139,7 @@ int	exec_cmp(t_shell *mini, char **args, char **envp)
 	if (!(ft_strncmp(args[0], "cd", 2)))
 		return (cmd_cd(args, envp));
 	if (!(ft_strncmp(args[0], "echo", 4)))
-		return (cmd_echo(args, envp));
+		return (cmd_echo(mini, args, envp));
 	if (!(ft_strncmp(args[0], "export", 7)))
 	{
 		cmd_export(mini, args);

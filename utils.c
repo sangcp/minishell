@@ -69,4 +69,6 @@ void	free_all(t_shell *mini, t_list *list)
 		free(((t_ops *)(tlist->content)));
 	if (tlist)
 		free(tlist);
+	if (mini->q_c)
+		free(mini->q_c);
 }

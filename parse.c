@@ -49,6 +49,7 @@ static char	**list_to_arr(t_list *list)
 char	**parse_args(char *line, t_ops *ops)
 {
 	t_list	*list;
+	//char	*tmp;
 	int		i;
 
 	ops->in_quotes = 0;
@@ -56,24 +57,26 @@ char	**parse_args(char *line, t_ops *ops)
 	list = NULL;
 	while (line[i])
 	{
+		/*while (*line == ' ')
+			line++;*/
 		while (line[i] == ' ')
 			i++;
 		while (*line == ' ')
 			line++;
 		if (!line[0])
 			break ;
-		if ((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
-		(line[i] != ' ' && line[i + 1] == ' ')) && i > 0)
+		if (((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
+		(line[i] != ' ' && line[i + 1] == ' ')) && i > 0) || (i == 0 && line[0] && !line[1]))
 		{
 			if (line[0] == '\"' || line[0] == '\'')
 			{
 				i = quote_skip(line, i, line[0]);
 				ops->in_quotes = 1;
 			}
-			if (ops->in_quotes == 0)
-				ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 0, i + 1)));
-			else
-				ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 1, i - 1)));
+			//if (ops->in_quotes == 0)
+			ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 0, i + 1)));
+			/*else
+				ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 1, i - 1)));*/
 			line += i + 1;
 			i = -1;
 		}
@@ -116,6 +119,11 @@ int		cmd_chk(char *cmd)
 	i = 0;
 	if (!ft_strcmp(cmd, ""))
 		return (1);
+	while (cmd[i] == ' ')
+		i++;
+	if (!cmd[i])
+		return (1);
+	i = 0;
 	if (ft_strchr("<>|;", cmd[i]))
 	{
 		i++;

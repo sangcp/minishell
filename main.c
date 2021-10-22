@@ -43,10 +43,10 @@ char	*get_env(char **envp, char *option)
 {
 	int		i;
 	int		j;
-	char	find[5];
+	char	find[30];
 
 	i = 0;
-	ft_strlcpy(find, option, 5);
+	ft_strlcpy(find, option, 30);
 	while (envp[i])
 	{
 		j = 0;
@@ -58,7 +58,7 @@ char	*get_env(char **envp, char *option)
 	}
 	return (NULL);
 }
-
+/*
 void	terminal_msg(void)
 {
 	char	buf[100];
@@ -67,7 +67,7 @@ void	terminal_msg(void)
 	msg = getcwd(buf, 100);
 	ft_putstr_fd("minishell$ ", 1);
 }
-
+*/
 void	exit_shell(void)
 {
 	write(1, "\n", 1);
@@ -117,7 +117,11 @@ void	print_echo(char **str, int i)
 	int	starts_qu;
 	int	ends_qu;
 	int	len;
+	int j;
 
+	j = 0;
+	if (!str[i])
+		return ;
 	starts_qu = is_quotes(str[i][0]);
 	len = (int)ft_strlen(str[i]);
 	ends_qu = is_quotes(str[i][len - 1]);
@@ -128,16 +132,26 @@ void	print_echo(char **str, int i)
 	else if (starts_qu)
 		ft_putstr_fd(str[i] + 1, 1);
 	else
-		ft_putstr_fd(str[i], 1);
+	{
+		//ft_putstr_fd(str[i], 1);
+		while (str[i][j])
+		{
+			if (str[i][j] != '\'' && str[i][j] != '\"')
+				ft_putchar_fd(str[i][j], 1);
+			j++;
+		}
+	}
 }
 
-int	cmd_echo(char **args, char **envp)
+int	cmd_echo(t_shell *mini, char **args, char **envp)
 {
-	char *tmp;
+	(void)mini;
+	//char *tmp;
 	int	n_flag;
 	int	i;
 	int j;
 
+	(void)envp;
 	i = 1;
 	j = 0;
 	if (!args[1])
@@ -154,14 +168,21 @@ int	cmd_echo(char **args, char **envp)
 		i++;
 	while (args[i])
 	{
-		if (args[i][0] == '$')
+		/*if (args[i][0] == '$')
 		{
-			tmp = get_env(envp, args[i] + 1);
+			if (!args[i][1])
+			{
+				ft_putstr_fd("$", 1);
+				break ;
+			}
+			tmp = get_env(mini->c_evs, args[i] + 1);
+			if (!tmp)
+				break ;
 			ft_putstr_fd(tmp, 1);
 		}
-		else
-			print_echo(args, i);
-		if (args[i + 1])
+		else*/
+		print_echo(args, i);
+		if (args[i + 1] && mini->q_c[i] != '0')
 			ft_putchar_fd(' ', 1);
 		i++;
 		j++;
@@ -186,6 +207,64 @@ void	reset_fds(t_shell *mini)
 	dup2(mini->fds[1], 1);
 	dup2(mini->stdinp, 0);
 	dup2(mini->stdout, 1);
+}
+
+
+char	**q_del(t_shell *mini, t_list *list, char **args)
+{
+	char **tmp;
+	char	*line;
+	int i;
+	int j;
+	//int q_chk;
+
+	i = 0;
+	while (args[i])
+		i++;
+	tmp = (char **)malloc(sizeof(char*) * (i + 1));
+	mini->q_c = (char *)malloc(sizeof(char) * (i + 1));
+	line = ((t_ops*)(list->content))->operation;
+	i = 0;
+	while (args[i])
+	{
+		j = 0;
+		while (ft_strncmp(line, args[i], ft_strlen(args[i])))
+			line++;
+		if ((line[ft_strlen(args[i]) - 1] == '\"' || line[ft_strlen(args[i]) - 1] == '\'')\
+		&& line[ft_strlen(args[i])] != ' ')
+			mini->q_c[i] = '0';
+		if (args[i][0] == '\"' && args[i][1] == '$')
+			tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 2));
+		else if (args[i][0] == '\'' && args[i][1] == '$')
+			tmp[i] = ft_substr(args[i], 1, (ft_strlen(args[i]) - 2));
+		else if (args[i][0] == '\'' || args[i][0] == '\"')
+			tmp[i] = ft_substr(args[i], 1, (ft_strlen(args[i]) - 2));
+		else if (args[i][0] == '$' && args[i][1])
+			tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 1));
+		else
+			tmp[i] = ft_strdup(args[i]);
+		/*printf("a = (%s)", args[i]);
+		printf(" || t = (%s)\n", tmp[i]);*/
+		i++;
+	}
+	tmp[i] = NULL;
+	path_free(args);
+	return (tmp);
+}
+
+void q_chk(t_shell *mini, t_list *list)
+{
+	t_list *tlist;
+
+	if (!list)
+		return ;
+	tlist = list;
+	while (tlist->next)
+	{
+		((t_ops*)(tlist->content))->args = q_del(mini, list, ((t_ops*)(tlist->content))->args);
+		tlist = tlist->next;
+	}
+	((t_ops*)(tlist->content))->args = q_del(mini, list, ((t_ops*)(tlist->content))->args);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -215,6 +294,7 @@ int	main(int ac, char **av, char **envp)
 		if (*cmd)
 			add_history(rl_line_buffer);
 		list = parse_option(cmd);
+		q_chk(&mini, list);
 		mini.prev_pipe = STDIN_FILENO;
 		mini.count = ft_lstsize(list);
 		restore_term(&mini);
@@ -228,3 +308,6 @@ int	main(int ac, char **av, char **envp)
 			break ;
 	}
 }
+
+
+//뇌를 자극하는윈도우즈 시스템 프로그래밍

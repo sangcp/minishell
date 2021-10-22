@@ -45,21 +45,23 @@ char	*change_env(char *new_env)
 char	**plus_line(char **env, char *new_env)
 {
 	char	**envp;
-	char	*new_change_env;
+	//char	*new_change_env;
 	int		i;
 
-	new_change_env = change_env(new_env);
+	//new_change_env = change_env(new_env);
 	i = 0;
 	while (env[i])
 		i++;
-	envp = (char **)malloc(sizeof(char *) * (i + 1));
+	envp = (char **)malloc(sizeof(char *) * (i + 2));
 	i = 0;
 	while (env[i])
 	{
-		envp[i] = env[i];
+		envp[i] = ft_strdup(env[i]);
 		i++;
 	}
-	envp[i] = new_change_env;
+	envp[i] = ft_strdup(new_env);
+	envp[++i] = NULL;
+	path_free(env);
 	return (envp);
 }
 
@@ -120,18 +122,15 @@ char	**desending_envp(char **envp)
 		i++;
 	}
 	i = 0;
-	if (envp)
-	{
-		while (envp[i])
-			free(envp[i++]);
-		free(envp);
-	}
+	path_free(envp);
 	return (desen_envp);
 }
 
 void	cmd_export(t_shell *mini, char **args)
 {
 	int	i;
+	int j;
+	int q_flag;
 
 	mini->c_evs = desending_envp(mini->c_evs);
 	if (!(ft_strcmp(args[0], "export")) && !args[1])
@@ -139,14 +138,34 @@ void	cmd_export(t_shell *mini, char **args)
 		i = 0;
 		while (mini->c_evs[i])
 		{
-			printf("declare -x %s\n", mini->c_evs[i]);
+			j = 0;
+			q_flag = 0;
+			//printf("declare -x %s\n", mini->c_evs[i]);
+			printf("declare -x ");
+			while (mini->c_evs[i][j])
+			{
+				printf("%c", mini->c_evs[i][j]);
+				if (mini->c_evs[i][j] == '=')
+				{
+					printf("\"");
+					q_flag = 1;
+				}
+				j++;
+			}
+			if (q_flag)
+				printf("\"");
+			printf("\n");
 			i++;
 		}
-		printf("fin\n");
 	}
 	else if (args[1][0] == '$')
 	{
 		i = 0;
+		if (!args[1][1])
+		{
+			printf("minishell: export: `$': not a valid identifier\n");
+			return ;
+		}
 		while (mini->c_evs[i])
 		{
 			printf("declare -x %s\n", mini->c_evs[i]);

@@ -28,6 +28,8 @@ typedef struct s_ops
 	int				rv;
 	char			type;
 	int				fds[2];
+	char			q;
+	char			*q_chk;
 	struct s_ops	*next;
 	struct s_ops	*prev;
 }					t_ops;
@@ -38,6 +40,7 @@ typedef struct s_shell
 	char			**args;
 	char			**evs;
 	char			**c_evs;
+	char			*q_c;
 	int				rv;
 	int				fds[2];
 	int				prev_pipe;
@@ -61,7 +64,7 @@ char		*get_env(char **envp, char *option);
 char *get_cmd();
 
 int cmd_cd(char **args, char **envp);
-int cmd_echo(char **args, char **envp);
+int cmd_echo(t_shell *mini, char **args, char **envp);
 
 void cmd_export(t_shell *mini, char **args);
 int cmd_env(char **args, char **envp);
