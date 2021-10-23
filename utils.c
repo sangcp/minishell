@@ -51,7 +51,7 @@ void	free_all(t_shell *mini, t_list *list)
 			free(((t_ops *)(tlist->content))->args);
 		}
 		free(((t_ops *)(tlist->content))->operation);
-		free(((t_ops*)(list->content))->q_chk);
+		free(((t_ops*)(tlist->content))->q_chk);
 		free(((t_ops *)(tlist->content)));
 		free(tlist);
 		tlist = tlist->next;
