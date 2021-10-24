@@ -27,7 +27,10 @@ SRCS = cmd_env.c\
 		signal.c\
 		termios.c\
 		utils.c\
-		cmd_unset.c
+		utils2.c\
+		cmd_unset.c\
+		cmd_cd.c\
+		cmd_echo.c
 
 SRCDIR = ./
 SRCNAMES = $(shell ls $(SRCDIR) | grep -E ".+\.c")

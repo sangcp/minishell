@@ -56,8 +56,6 @@ char	**parse_args(char *line, t_ops *ops)
 	list = NULL;
 	while (line[i])
 	{
-		/*while (*line == ' ')
-			line++;*/
 		while (line[i] == ' ')
 			i++;
 		while (*line == ' ')
@@ -66,8 +64,11 @@ char	**parse_args(char *line, t_ops *ops)
 			break ;
 		if (((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
 		(line[i] != ' ' && line[i + 1] == ' ')) && i > 0) || \
-		(i == 0 && line[0] && !line[1]))
+		(i == 0 && line[0] && !line[1]) || \
+		(i == 1 && line[i] == ' ' && line[i + 1] != ' '))
 		{
+			if (i == 1 && line[i] == ' ' && line[i + 1] != ' ')
+				i--;
 			if (line[0] == '\"' || line[0] == '\'')
 			{
 				i = quote_skip(line, i, line[0]);
@@ -77,6 +78,7 @@ char	**parse_args(char *line, t_ops *ops)
 			ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 0, i + 1)));
 			/*else
 				ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 1, i - 1)));*/
+			//printf("(%s) (%c) (%d)\n", line, line[i], i);
 			line += i + 1;
 			i = -1;
 		}

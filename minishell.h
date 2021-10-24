@@ -60,11 +60,7 @@ typedef struct			s_state
 
 //---- main.c ---//
 void terminal_msg();
-char		*get_env(char **envp, char *option);
 char *get_cmd();
-
-int cmd_cd(char **args, char **envp);
-int cmd_echo(t_shell *mini, t_list *list, char **args, char **envp);
 
 void cmd_export(t_shell *mini, char **args);
 int cmd_env(char **args, t_shell *mini);
@@ -87,6 +83,10 @@ int is_quotes(char c);
 
 void free_all(t_shell *mini, t_list *list);
 
+// - utils.c
+char		*get_env(char **envp, char *option);
+void	exit_shell(void);
+void	reset_fds(t_shell *mini);
 // ------ signal.c -----//
 
 void sighandler1(int sig);
@@ -120,5 +120,11 @@ void	restore_term(t_shell *mini);
 
 // --- cmd_unset.c --//
 int cmd_unset(t_shell *mini, char **envp);
+
+// --- cmd_cd.c -- //
+int cmd_cd(char **args, char **envp);
+
+// -- cmd_echo.c
+int cmd_echo(t_list *list, char **args);
 
 #endif

@@ -12,36 +12,6 @@
 
 #include "minishell.h"
 
-char	*change_env(char *new_env)
-{
-	int		i;
-	char	*new_str;
-	int		check;
-	int		flag;
-
-	flag = 0;
-	check = 0;
-	new_str = (char *)malloc(sizeof(char) * (ft_strlen(new_env) + 2));
-	i = 0;
-	while (new_env[i])
-	{
-		new_str[check] = new_env[i];
-		check++;
-		i++;
-		if (new_env[i] == '=')
-		{
-			new_str[check++] = new_env[i];
-			new_str[check] = '\"';
-			check++;
-			i++;
-			flag = 1;
-		}
-	}
-	if (flag)
-		new_str[check] = '\"';
-	return (new_str);
-}
-
 char	**plus_line(char **env, char *new_env)
 {
 	char	**envp;
@@ -50,7 +20,6 @@ char	**plus_line(char **env, char *new_env)
 	int		j;
 	int		k;
 
-	//new_change_env = change_env(new_env);
 	i = 0;
 	j = -1;
 	while (new_env[i] && new_env[i] != '=')
@@ -63,7 +32,7 @@ char	**plus_line(char **env, char *new_env)
 			j = i;
 		i++;
 	}
-	if (j)
+	if (j != -1)
 		i--;
 	envp = (char **)malloc(sizeof(char *) * (i + 2));
 	i = 0;
@@ -137,7 +106,6 @@ char	**desending_envp(char **envp)
 		}
 		i++;
 	}
-	i = 0;
 	path_free(envp);
 	return (desen_envp);
 }
@@ -145,7 +113,7 @@ char	**desending_envp(char **envp)
 void	cmd_export(t_shell *mini, char **args)
 {
 	int	i;
-	int j;
+	int	j;
 	int	q_flag;
 
 	mini->c_evs = desending_envp(mini->c_evs);
@@ -156,7 +124,6 @@ void	cmd_export(t_shell *mini, char **args)
 		{
 			j = 0;
 			q_flag = 0;
-			//printf("declare -x %s\n", mini->c_evs[i]);
 			printf("declare -x ");
 			while (mini->c_evs[i][j])
 			{

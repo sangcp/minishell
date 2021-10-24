@@ -22,36 +22,21 @@ char	**rm_env(char **evs, char *arg)
 
 	tmp = evs;
 	i = 0;
-	k = 0;
+	k = -1;
 	while (evs[i])
 		i++;
 	ret = malloc((sizeof(char *)) * i);
-	if (!ret)
-		return (NULL);
 	i = 0;
-	while (evs[k])
+	while (evs[++k])
 	{
 		j = 0;
 		while (evs[k][j] && evs[k][j] != '=')
 			j++;
 		if (ft_strncmp(evs[k], arg, j + 1) != '=')
-		{
-			ret[i] = ft_strdup(evs[k]);
-			i++;
-		}
-		k++;
+			ret[i++] = ft_strdup(evs[k]);
 	}
 	ret[i] = NULL;
-	i = 0;
-	if (tmp)
-	{
-		while (tmp[i] != NULL)
-		{
-			free(tmp[i]);
-			i++;
-		}
-		free(tmp);
-	}
+	path_free(tmp);
 	return (ret);
 }
 

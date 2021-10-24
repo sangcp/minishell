@@ -23,37 +23,13 @@ char	**put_evs(t_shell *mini, char **envp)
 	return (ret);
 }
 
-char	*get_env(char **envp, char *option)
-{
-	int		i;
-	int		j;
-	char	find[30];
-
-	i = 0;
-	ft_strlcpy(find, option, 30);
-	while (envp[i])
-	{
-		j = 0;
-		while (envp[i][j] != '=')
-			j++;
-		if (ft_strncmp(find, envp[i], j) == 0)
-			return (envp[i] + j + 1);
-		++i;
-	}
-	return (NULL);
-}
-
-void	exit_shell(void)
-{
-	write(1, "\n", 1);
-	exit(0);
-}
-
-char	*get_cmd(void)
+char	*get_cmd(int ac, char **av)
 {
 	int		i;
 	char	*cmd;
 
+	(void)ac;
+	(void)av;
 	i = 0;
 	cmd = readline("minishell$ ");
 	if (!cmd)
@@ -65,115 +41,7 @@ char	*get_cmd(void)
 	}
 	return (cmd);
 }
-
-char	*get_path(char **strs)
-{
-	if (!strs[1][1])
-		return ("");
-	else
-		return (strs[1] + 1);
-}
-
-int	cmd_cd(char **args, char **envp)
-{
-	if (args[1][0] == '~')
-	{
-		if ((chdir(ft_strjoin(get_env(envp, "HOME"), get_path(args)))) == -1)
-			ft_putstr_fd("cd fail\n", 2);
-		return (0);
-	}
-	if ((chdir(args[1])) == -1)
-		ft_putstr_fd("cd fail\n", 2);
-	return (0);
-}
-
-void	print_echo(char **str, int i)
-{
-	int	starts_qu;
-	int	ends_qu;
-	int	len;
-	int	j;
-
-	j = 0;
-	if (!str[i])
-		return ;
-	starts_qu = is_quotes(str[i][0]);
-	len = (int)ft_strlen(str[i]);
-	ends_qu = is_quotes(str[i][len - 1]);
-	if (ends_qu && starts_qu)
-		ft_putnstr(str[i] + 1, -1);
-	else if (ends_qu)
-		ft_putnstr(str[i], -1);
-	else if (starts_qu)
-		ft_putstr_fd(str[i] + 1, 1);
-	else
-	{
-		while (str[i][j])
-		{
-			if (str[i][j] != '\'' && str[i][j] != '\"')
-				ft_putchar_fd(str[i][j], 1);
-			j++;
-		}
-	}
-}
-
-int	cmd_echo(t_shell *mini, t_list *list, char **args, char **envp)
-{
-	int	n_flag;
-	int	i;
-	int	j;
-
-	(void)envp;
-	(void)mini;
-	i = 1;
-	j = 0;
-	if (!args[1])
-	{
-		ft_putchar_fd('\n', 1);
-		return (0);
-	}
-	n_flag = 0;
-	/*if (args[1][0] == '$')
-		return (print_export(args[1], envp));*/
-	if (args[1][0] == '-' && args[1][1] == 'n' && args[1][2] == '\0')
-		n_flag = 1;
-	if (n_flag)
-		i++;
-	while (args[i])
-	{
-		/*if (args[i][0] == '$')
-		{
-			if (!args[i][1])
-			{
-				ft_putstr_fd("$", 1);
-				break ;
-			}
-			tmp = get_env(mini->c_evs, args[i] + 1);
-			if (!tmp)
-				break ;
-			ft_putstr_fd(tmp, 1);
-		}
-		else*/
-		print_echo(args, i);
-		if (args[i + 1] && ((t_ops *)(list->content))->q_chk[i] != '0')
-			ft_putchar_fd(' ', 1);
-		i++;
-		j++;
-	}
-	if (!n_flag)
-		ft_putchar_fd('\n', 1);
-	return (0);
-}
-
 //==============*====//
-
-void	reset_fds(t_shell *mini)
-{
-	dup2(mini->fds[0], 0);
-	dup2(mini->fds[1], 1);
-	dup2(mini->stdinp, 0);
-	dup2(mini->stdout, 1);
-}
 
 char	**q_del(t_shell *mini, t_list *list, char **args)
 {
@@ -223,14 +91,12 @@ void	q_chk(t_shell *mini, t_list *list)
 	if (!list)
 		return ;
 	tlist = list;
-	while (tlist->next)
+	while (tlist)
 	{
 		((t_ops *)(tlist->content))->args = q_del(mini, tlist, \
 		((t_ops *)(tlist->content))->args);
 		tlist = tlist->next;
 	}
-	((t_ops *)(tlist->content))->args = q_del(mini, tlist, \
-	((t_ops *)(tlist->content))->args);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -242,19 +108,15 @@ int	main(int ac, char **av, char **envp)
 
 	mini.fds[0] = dup(STDIN_FILENO);
 	mini.fds[1] = dup(STDOUT_FILENO);
-	(void)av;
-	(void)ac;
 	mini.evs = put_evs(&mini, envp);
 	mini.c_evs = put_evs(&mini, envp);
 	init_term(&mini);
 	while (1)
 	{
-		i = 0;
 		signal(SIGINT, &sighandler1);
-		//signal(SIGQUIT, &pipe_sighandler1);
 		signal(SIGQUIT, SIG_IGN);
 		tcsetattr(STDIN_FILENO, TCSANOW, &mini.term);
-		cmd = get_cmd();
+		cmd = get_cmd(ac, av);
 		if (*cmd)
 			add_history(rl_line_buffer);
 		list = parse_option(cmd);
@@ -262,8 +124,6 @@ int	main(int ac, char **av, char **envp)
 		mini.prev_pipe = STDIN_FILENO;
 		mini.count = ft_lstsize(list);
 		restore_term(&mini);
-		/*while (((t_ops *)(list->content))->args[i])
-			printf("(%s)\n", ((t_ops *)(list->content))->args[i++]);*/
 		i = run_cmd1(&mini, list, envp);
 		free_all(&mini, list);
 		reset_fds(&mini);

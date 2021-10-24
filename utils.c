@@ -24,9 +24,13 @@ void	path_free(char **str)
 	int	i;
 
 	i = 0;
-	while (str[i])
-		free(str[i++]);
-	free(str);
+	if (str)
+	{
+		while (str[i])
+			if (str[i])
+				free(str[i++]);
+		free(str);
+	}
 }
 
 void	free_all(t_shell *mini, t_list *list)
@@ -39,17 +43,11 @@ void	free_all(t_shell *mini, t_list *list)
 	if (list == NULL)
 		return ;
 	tlist = list;
-	while (tlist->next)
+	while (tlist)
 	{
-		if (((t_ops *)(tlist->content))->args)
-		{
-			while (((t_ops *)(tlist->content))->args[i])
-			{
-				free(((t_ops *)(tlist->content))->args[i]);
-				i++;
-			}
-			free(((t_ops *)(tlist->content))->args);
-		}
+		while (((t_ops *)(tlist->content))->args[i])
+			free(((t_ops *)(tlist->content))->args[i++]);
+		free(((t_ops *)(tlist->content))->args);
 		free(((t_ops *)(tlist->content))->operation);
 		free(((t_ops *)(tlist->content))->q_chk);
 		free(((t_ops *)(tlist->content)));
@@ -57,19 +55,30 @@ void	free_all(t_shell *mini, t_list *list)
 		tlist = tlist->next;
 		i = 0;
 	}
-	while (((t_ops *)(tlist->content))->args[i])
+}
+
+char	*get_env(char **envp, char *option)
+{
+	int		i;
+	int		j;
+	char	find[30];
+
+	i = 0;
+	ft_strlcpy(find, option, 30);
+	while (envp[i])
 	{
-		free(((t_ops *)(tlist->content))->args[i]);
-		i++;
+		j = 0;
+		while (envp[i][j] != '=')
+			j++;
+		if (ft_strncmp(find, envp[i], j) == 0)
+			return (envp[i] + j + 1);
+		++i;
 	}
-	if (((t_ops *)(tlist->content))->operation)
-		free(((t_ops *)(tlist->content))->operation);
-	if (((t_ops *)(tlist->content))->args)
-		free(((t_ops *)(tlist->content))->args);
-	if (((t_ops *)(tlist->content))->q_chk)
-		free(((t_ops *)(tlist->content))->q_chk);
-	if (((t_ops *)(tlist->content)))
-		free(((t_ops *)(tlist->content)));
-	if (tlist)
-		free(tlist);
+	return (NULL);
+}
+
+void	exit_shell(void)
+{
+	write(1, "\n", 1);
+	exit(0);
 }
