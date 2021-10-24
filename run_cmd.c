@@ -48,12 +48,13 @@ int	test_input(t_list *list, t_shell *mini, char **envp)
 	mini->prev_pipe = ((t_ops *)(list->content))->fds[0];
 	return (0);
 }
-// -----------
+// ----------
+
 int	operator_exec(t_list *list, t_shell *mini, char **envp)
 {
-	if ((((t_ops *)(list->content))->type == '<' ||\
+	if ((((t_ops *)(list->content))->type == '<' || \
 	((t_ops *)(list->content))->type == '{') && \
-	(((t_ops *)(list->next->content))->type == '|' ||\
+	(((t_ops *)(list->next->content))->type == '|' || \
 	((t_ops *)(list->next->content))->type == '>'))
 		return (test_input(list, mini, envp));
 	if (((t_ops *)(list->content))->type == '|')

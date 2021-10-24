@@ -1,27 +1,11 @@
 #include "minishell.h"
 
 //===========****===========****===========**//
-char **put_evs(t_shell *mini, char **envp)
+char	**put_evs(t_shell *mini, char **envp)
 {
-    int i;
-	//int len;
-	char **ret;
+	int		i;
+	char	**ret;
 
-    /*i = 0;
-    while (envp[i])
-        i++;
-    mini->evs = (char**)malloc(sizeof(char *) * i);
-	mini->c_evs = (char**)malloc(sizeof(char *) * i);
-    i= 0;
-    while (envp[i])
-    {
-        len = ft_strlen(envp[i]);
-		//mini->evs[i] = (char *)malloc(sizeof(char) * len);
-		mini->evs[i] = ft_strdup(envp[i]);
-		//mini->c_evs[i] = (char *)malloc(sizeof(char) * len);
-        mini->c_evs[i] = ft_strdup(envp[i]);
-        i++;
-    }*/
 	(void)mini;
 	i = 0;
 	while (envp[i])
@@ -58,16 +42,7 @@ char	*get_env(char **envp, char *option)
 	}
 	return (NULL);
 }
-/*
-void	terminal_msg(void)
-{
-	char	buf[100];
-	char	*msg;
 
-	msg = getcwd(buf, 100);
-	ft_putstr_fd("minishell$ ", 1);
-}
-*/
 void	exit_shell(void)
 {
 	write(1, "\n", 1);
@@ -117,7 +92,7 @@ void	print_echo(char **str, int i)
 	int	starts_qu;
 	int	ends_qu;
 	int	len;
-	int j;
+	int	j;
 
 	j = 0;
 	if (!str[i])
@@ -133,7 +108,6 @@ void	print_echo(char **str, int i)
 		ft_putstr_fd(str[i] + 1, 1);
 	else
 	{
-		//ft_putstr_fd(str[i], 1);
 		while (str[i][j])
 		{
 			if (str[i][j] != '\'' && str[i][j] != '\"')
@@ -145,13 +119,12 @@ void	print_echo(char **str, int i)
 
 int	cmd_echo(t_shell *mini, t_list *list, char **args, char **envp)
 {
-	(void)mini;
-	//char *tmp;
 	int	n_flag;
 	int	i;
-	int j;
+	int	j;
 
 	(void)envp;
+	(void)mini;
 	i = 1;
 	j = 0;
 	if (!args[1])
@@ -182,20 +155,13 @@ int	cmd_echo(t_shell *mini, t_list *list, char **args, char **envp)
 		}
 		else*/
 		print_echo(args, i);
-		if (args[i + 1] && ((t_ops*)(list->content))->q_chk[i] != '0')
+		if (args[i + 1] && ((t_ops *)(list->content))->q_chk[i] != '0')
 			ft_putchar_fd(' ', 1);
 		i++;
 		j++;
 	}
 	if (!n_flag)
-			ft_putchar_fd('\n', 1);
-	/*while (args[i])
-	{
-		print_echo(args, i);
-		if (!n_flag && !args[i + 1])
-			ft_putchar_fd('\n', 1);
-		i++;
-	}*/
+		ft_putchar_fd('\n', 1);
 	return (0);
 }
 
@@ -209,31 +175,30 @@ void	reset_fds(t_shell *mini)
 	dup2(mini->stdout, 1);
 }
 
-
 char	**q_del(t_shell *mini, t_list *list, char **args)
 {
-	char **tmp;
+	char	**tmp;
 	char	*line;
-	int i;
-	int j;
-	//int q_chk;
+	int		i;
+	int		j;
 
 	i = 0;
 	while (args[i])
 		i++;
-	tmp = (char **)malloc(sizeof(char*) * (i + 1));
-	((t_ops*)(list->content))->q_chk = (char *)malloc(sizeof(char) * (i + 1));
-	((t_ops*)(list->content))->q_chk[i] = '\0';
-	line = ((t_ops*)(list->content))->operation;
+	tmp = (char **)malloc(sizeof(char *) * (i + 1));
+	((t_ops *)(list->content))->q_chk = (char *)malloc(sizeof(char) * (i + 1));
+	((t_ops *)(list->content))->q_chk[i] = '\0';
+	line = ((t_ops *)(list->content))->operation;
 	i = 0;
 	while (args[i])
 	{
 		j = 0;
 		while (ft_strncmp(line, args[i], ft_strlen(args[i])))
 			line++;
-		if ((line[ft_strlen(args[i]) - 1] == '\"' || line[ft_strlen(args[i]) - 1] == '\'')\
+		if ((line[ft_strlen(args[i]) - 1] == '\"' || \
+		line[ft_strlen(args[i]) - 1] == '\'') \
 		&& line[ft_strlen(args[i])] != ' ')
-			((t_ops*)(list->content))->q_chk[i] = '0';
+			((t_ops *)(list->content))->q_chk[i] = '0';
 		if (args[i][0] == '\"' && args[i][1] == '$')
 			tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 2));
 		else if (args[i][0] == '\'' && args[i][1] == '$')
@@ -244,8 +209,6 @@ char	**q_del(t_shell *mini, t_list *list, char **args)
 			tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 1));
 		else
 			tmp[i] = ft_strdup(args[i]);
-		/*printf("a = (%s)", args[i]);
-		printf(" || t = (%s)\n", tmp[i]);*/
 		i++;
 	}
 	tmp[i] = NULL;
@@ -253,19 +216,21 @@ char	**q_del(t_shell *mini, t_list *list, char **args)
 	return (tmp);
 }
 
-void q_chk(t_shell *mini, t_list *list)
+void	q_chk(t_shell *mini, t_list *list)
 {
-	t_list *tlist;
+	t_list	*tlist;
 
 	if (!list)
 		return ;
 	tlist = list;
 	while (tlist->next)
 	{
-		((t_ops*)(tlist->content))->args = q_del(mini, tlist, ((t_ops*)(tlist->content))->args);
+		((t_ops *)(tlist->content))->args = q_del(mini, tlist, \
+		((t_ops *)(tlist->content))->args);
 		tlist = tlist->next;
 	}
-	((t_ops*)(tlist->content))->args = q_del(mini, tlist, ((t_ops*)(tlist->content))->args);
+	((t_ops *)(tlist->content))->args = q_del(mini, tlist, \
+	((t_ops *)(tlist->content))->args);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -279,14 +244,12 @@ int	main(int ac, char **av, char **envp)
 	mini.fds[1] = dup(STDOUT_FILENO);
 	(void)av;
 	(void)ac;
-	//put_evs(&mini, envp);
 	mini.evs = put_evs(&mini, envp);
 	mini.c_evs = put_evs(&mini, envp);
 	init_term(&mini);
 	while (1)
 	{
 		i = 0;
-		//terminal_msg();
 		signal(SIGINT, &sighandler1);
 		//signal(SIGQUIT, &pipe_sighandler1);
 		signal(SIGQUIT, SIG_IGN);
@@ -309,6 +272,3 @@ int	main(int ac, char **av, char **envp)
 			break ;
 	}
 }
-
-
-//뇌를 자극하는윈도우즈 시스템 프로그래밍

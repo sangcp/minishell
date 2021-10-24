@@ -16,7 +16,7 @@ char	**rm_env(char **evs, char *arg)
 {
 	int		i;
 	int		j;
-	int 	k;
+	int		k;
 	char	**ret;
 	char	**tmp;
 
@@ -55,9 +55,9 @@ char	**rm_env(char **evs, char *arg)
 	return (ret);
 }
 
-int cmd_unset(t_shell *mini, char **envp)
+int	cmd_unset(t_shell *mini, char **envp)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	(void)envp;

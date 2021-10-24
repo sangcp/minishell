@@ -46,7 +46,6 @@ char	**plus_line(char **env, char *new_env)
 {
 	char	**envp;
 	char	*tmp;
-	//char	*new_change_env;
 	int		i;
 	int		j;
 	int		k;
@@ -64,7 +63,6 @@ char	**plus_line(char **env, char *new_env)
 			j = i;
 		i++;
 	}
-	printf("(%d)\n", j);
 	if (j)
 		i--;
 	envp = (char **)malloc(sizeof(char *) * (i + 2));
@@ -148,7 +146,7 @@ void	cmd_export(t_shell *mini, char **args)
 {
 	int	i;
 	int j;
-	int q_flag;
+	int	q_flag;
 
 	mini->c_evs = desending_envp(mini->c_evs);
 	if (!(ft_strcmp(args[0], "export")) && !args[1])

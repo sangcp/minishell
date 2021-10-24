@@ -49,7 +49,6 @@ static char	**list_to_arr(t_list *list)
 char	**parse_args(char *line, t_ops *ops)
 {
 	t_list	*list;
-	//char	*tmp;
 	int		i;
 
 	ops->in_quotes = 0;
@@ -66,7 +65,8 @@ char	**parse_args(char *line, t_ops *ops)
 		if (!line[0])
 			break ;
 		if (((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
-		(line[i] != ' ' && line[i + 1] == ' ')) && i > 0) || (i == 0 && line[0] && !line[1]))
+		(line[i] != ' ' && line[i + 1] == ' ')) && i > 0) || \
+		(i == 0 && line[0] && !line[1]))
 		{
 			if (line[0] == '\"' || line[0] == '\'')
 			{
@@ -112,9 +112,9 @@ t_ops	*set_ops(char *cmd, int i)
 	return (ops);
 }
 
-int		cmd_chk(char *cmd)
+int	cmd_chk(char *cmd)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!ft_strcmp(cmd, ""))

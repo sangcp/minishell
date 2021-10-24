@@ -32,7 +32,7 @@ void	path_free(char **str)
 void	free_all(t_shell *mini, t_list *list)
 {
 	t_list	*tlist;
-	int	i;
+	int		i;
 
 	(void)mini;
 	i = 0;
@@ -51,7 +51,7 @@ void	free_all(t_shell *mini, t_list *list)
 			free(((t_ops *)(tlist->content))->args);
 		}
 		free(((t_ops *)(tlist->content))->operation);
-		free(((t_ops*)(tlist->content))->q_chk);
+		free(((t_ops *)(tlist->content))->q_chk);
 		free(((t_ops *)(tlist->content)));
 		free(tlist);
 		tlist = tlist->next;
@@ -66,8 +66,8 @@ void	free_all(t_shell *mini, t_list *list)
 		free(((t_ops *)(tlist->content))->operation);
 	if (((t_ops *)(tlist->content))->args)
 		free(((t_ops *)(tlist->content))->args);
-	if (((t_ops*)(tlist->content))->q_chk)
-		free(((t_ops*)(tlist->content))->q_chk);
+	if (((t_ops *)(tlist->content))->q_chk)
+		free(((t_ops *)(tlist->content))->q_chk);
 	if (((t_ops *)(tlist->content)))
 		free(((t_ops *)(tlist->content)));
 	if (tlist)
