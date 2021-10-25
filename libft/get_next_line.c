@@ -36,7 +36,7 @@ int	get_next_line(const int fd, char **cmd)
 	return (0);
 }
 
-int			get_next_line1(const int fd, char **line)
+int	get_next_line1(const int fd, char **line)
 {
 	static char	*cpy[10000];
 	char		buf[BUFF_SIZE + 1];

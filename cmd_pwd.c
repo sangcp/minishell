@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bzero.c                                         :+:      :+:    :+:   */
+/*   cmd_pwd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sangcpar <sangcpar@student.42seoul.>       +#+  +:+       +#+        */
+/*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/01 13:06:15 by sangcpar          #+#    #+#             */
-/*   Updated: 2020/10/10 10:11:39 by sangcpar         ###   ########.fr       */
+/*   Created: 2021/10/25 05:26:21 by sangcpar          #+#    #+#             */
+/*   Updated: 2021/10/25 05:26:23 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	ft_bzero(void *dst, size_t size)
+int	cmd_pwd(char **args)
 {
-	size_t			i;
-	unsigned char	*n_dst;
+	char	buf[1000];
 
-	n_dst = dst;
-	i = 0;
-	while (i < size)
-	{
-		n_dst[i] = 0;
-		i++;
-	}
+	(void)args;
+	getcwd(buf, 1000);
+	printf("%s\n", buf);
+	return (0);
 }

@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-char				**ft_error(char **tab)
+char	**ft_error(char **tab)
 {
 	unsigned int	i;
 
@@ -26,7 +26,7 @@ char				**ft_error(char **tab)
 	return (NULL);
 }
 
-unsigned int		ft_strcount(char const *s, char c)
+unsigned int	ft_strcount(char const *s, char c)
 {
 	unsigned int	i;
 	unsigned int	nb_strs;
@@ -53,7 +53,7 @@ unsigned int		ft_strcount(char const *s, char c)
 	return (nb_strs);
 }
 
-void				ft_next_str(char **next_str, unsigned int *next_str_len,
+void	ft_next_str(char **next_str, unsigned int *next_str_len,
 		char c)
 {
 	unsigned int	i;
@@ -72,7 +72,7 @@ void				ft_next_str(char **next_str, unsigned int *next_str_len,
 	}
 }
 
-char				**ft_split(char const *s, char c)
+char	**ft_split(char const *s, char c)
 {
 	char			**tab;
 	char			*next_str;
@@ -83,18 +83,19 @@ char				**ft_split(char const *s, char c)
 	if (!s)
 		return (NULL);
 	nb_strs = ft_strcount(s, c);
-	if (!(tab = (char **)malloc(sizeof(char *) * (nb_strs + 1))))
+	tab = (char **)malloc(sizeof(char *) * (nb_strs + 1));
+	if (!tab)
 		return (NULL);
-	i = 0;
+	i = -1;
 	next_str = (char *)s;
 	next_str_len = 0;
-	while (i < nb_strs)
+	while (++i < nb_strs)
 	{
 		ft_next_str(&next_str, &next_str_len, c);
-		if (!(tab[i] = (char *)malloc(sizeof(char) * (next_str_len + 1))))
+		tab[i] = (char *)malloc(sizeof(char) * (next_str_len + 1));
+		if (!tab[i])
 			return (ft_error(tab));
 		ft_strlcpy(tab[i], next_str, next_str_len + 1);
-		i++;
 	}
 	tab[i] = NULL;
 	return (tab);

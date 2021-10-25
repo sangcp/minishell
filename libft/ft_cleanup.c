@@ -12,10 +12,10 @@
 
 #include "libft.h"
 
-int			ft_cleanup(char **cpy, char **line, int fd, int rd_ret)
+int	ft_cleanup(char **cpy, char **line, int fd, int rd_ret)
 {
-	char		*tmp;
-	size_t		len;
+	char	*tmp;
+	size_t	len;
 
 	len = ft_lentoc(cpy[fd], ENDL);
 	if (cpy[fd][len] == ENDL)

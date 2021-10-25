@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	operator_pipe(t_list *list, t_shell *mini, char **envp)
+int	operator_pipe(t_list *list, t_shell *mini)
 {
 	pid_t	pid;
 
@@ -24,7 +24,7 @@ int	operator_pipe(t_list *list, t_shell *mini, char **envp)
 		close(((t_ops *)(list->content))->fds[0]);
 		dup2(mini->prev_pipe, STDIN_FILENO);
 		dup2(((t_ops *)(list->content))->fds[1], 1);
-		mini->rv = exec_cmp(mini, mini->args, list, envp);
+		mini->rv = exec_cmp(mini, mini->args, list);
 		exit(0);
 	}
 	wait(&pid);
@@ -33,7 +33,7 @@ int	operator_pipe(t_list *list, t_shell *mini, char **envp)
 	return (0);
 }
 
-int	redirect_output(t_list *list, t_shell *mini, char **envp)
+int	redirect_output(t_list *list, t_shell *mini)
 {
 	int		fd;
 	char	*filename;
@@ -44,13 +44,13 @@ int	redirect_output(t_list *list, t_shell *mini, char **envp)
 	if (fd == -1)
 		return (-1);
 	dup2(fd, STDOUT_FILENO);
-	mini->rv = exec_cmp(mini, mini->args, list, envp);
+	mini->rv = exec_cmp(mini, mini->args, list);
 	dup2(mini->fds[0], STDOUT_FILENO);
 	close(fd);
 	return (0);
 }
 
-int	append_output(t_list *list, t_shell *mini, char **envp)
+int	append_output(t_list *list, t_shell *mini)
 {
 	int		fd;
 	char	*filename;
@@ -61,13 +61,13 @@ int	append_output(t_list *list, t_shell *mini, char **envp)
 	if (fd == -1)
 		return (-1);
 	dup2(fd, STDOUT_FILENO);
-	mini->rv = exec_cmp(mini, mini->args, list, envp);
+	mini->rv = exec_cmp(mini, mini->args, list);
 	dup2(mini->fds[0], STDOUT_FILENO);
 	close(fd);
 	return (0);
 }
 
-int	redirect_input(t_list *list, t_shell *mini, char **envp)
+int	redirect_input(t_list *list, t_shell *mini)
 {
 	int		fd;
 	char	*filename;
@@ -81,13 +81,13 @@ int	redirect_input(t_list *list, t_shell *mini, char **envp)
 		return (-1);
 	}
 	dup2(fd, STDIN_FILENO);
-	mini->rv = exec_cmp(mini, mini->args, list, envp);
+	mini->rv = exec_cmp(mini, mini->args, list);
 	dup2(mini->fds[0], STDIN_FILENO);
 	close(fd);
 	return (0);
 }
 
-int	append_input(t_shell *mini, t_list *list, char **envp)
+int	append_input(t_shell *mini, t_list *list)
 {
 	char	*str;
 	int		fd;
@@ -107,7 +107,7 @@ int	append_input(t_shell *mini, t_list *list, char **envp)
 	}
 	free(str);
 	close(fd);
-	redirect_input(list, mini, envp);
+	redirect_input(list, mini);
 	unlink(((t_ops *)(list->next->content))->args[0]);
 	return (1);
 }

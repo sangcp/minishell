@@ -18,12 +18,16 @@ void	*ft_realloc(void *ptr, size_t prev_size, size_t new_size)
 
 	if (!ptr)
 		return (NULL);
-	if (!(new = ft_memalloc(new_size)))
+	new = ft_memalloc(new_size);
+	if (!new)
 	{
 		free(ptr);
 		return (NULL);
 	}
-	ft_memcpy(new, ptr, prev_size < new_size ? prev_size : new_size);
+	if (prev_size < new_size)
+		ft_memcpy(new, ptr, prev_size);
+	else
+		ft_memcpy(new, ptr, new_size);
 	free(ptr);
 	return (new);
 }

@@ -12,16 +12,6 @@
 
 #include "minishell.h"
 
-int	quote_skip(char *cmd, int i, char q)
-{
-	while (1)
-	{
-		i++;
-		if (cmd[i] == q)
-			return (i);
-	}
-}
-
 static char	**list_to_arr(t_list *list)
 {
 	int		size;
@@ -51,39 +41,26 @@ char	**parse_args(char *line, t_ops *ops)
 	t_list	*list;
 	int		i;
 
-	ops->in_quotes = 0;
-	i = 0;
-	list = NULL;
-	while (line[i])
+	i = -1;
+	while (line[++i])
 	{
+		ops->in_quotes = 0;
 		while (line[i] == ' ')
 			i++;
 		while (*line == ' ')
 			line++;
 		if (!line[0])
 			break ;
-		if (((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
-		(line[i] != ' ' && line[i + 1] == ' ')) && i > 0) || \
-		(i == 0 && line[0] && !line[1]) || \
-		(i == 1 && line[i] == ' ' && line[i + 1] != ' '))
+		if (line_chk(line, i))
 		{
 			if (i == 1 && line[i] == ' ' && line[i + 1] != ' ')
 				i--;
 			if (line[0] == '\"' || line[0] == '\'')
-			{
-				i = quote_skip(line, i, line[0]);
-				ops->in_quotes = 1;
-			}
-			//if (ops->in_quotes == 0)
+				i = quote_skip(line, i, line[0], ops);
 			ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 0, i + 1)));
-			/*else
-				ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 1, i - 1)));*/
-			//printf("(%s) (%c) (%d)\n", line, line[i], i);
 			line += i + 1;
 			i = -1;
 		}
-		i++;
-		ops->in_quotes = 0;
 	}
 	return (list_to_arr(list));
 }
@@ -114,71 +91,24 @@ t_ops	*set_ops(char *cmd, int i)
 	return (ops);
 }
 
-int	cmd_chk(char *cmd)
-{
-	int	i;
-
-	i = 0;
-	if (!ft_strcmp(cmd, ""))
-		return (1);
-	while (cmd[i] == ' ')
-		i++;
-	if (!cmd[i])
-		return (1);
-	i = 0;
-	if (ft_strchr("<>|;", cmd[i]))
-	{
-		i++;
-		if (cmd[0] == '|' || cmd[0] == ';')
-		{
-			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
-			printf("\'%c\'\n", cmd[0]);
-			return (1);
-		}
-		while (cmd[i] == '<' || cmd[i] == '>')
-			i++;
-		while (cmd[i] && cmd[i] == ' ')
-			i++;
-		if (!cmd[i])
-		{
-			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
-			if (cmd[0] == '<' || cmd[0] == '>')
-				ft_putstr_fd("\'newline\'\n", 2);
-			else
-				printf("\'%c\'\n", cmd[0]);
-			return (1);
-		}
-	}
-	return (0);
-}
-
 t_list	*parse_option(char *cmd)
 {
 	t_list	*list;
-	t_ops	*ops;
+	t_ops	ops;
 	int		i;
-	int		j;
 
 	i = 0;
+	list = NULL;
 	if (cmd_chk(cmd))
 		return (NULL);
-	list = NULL;
 	while (1)
 	{
-		j = 1;
-		if (cmd[i] == '\'' || cmd[i] == '\"')
-			i = quote_skip(cmd, i, cmd[i]);
+		if (cmd[++i] == '\'' || cmd[i] == '\"')
+			i = quote_skip(cmd, i, cmd[i], &ops);
 		else if (!cmd[i] || ft_strchr(";|<>", cmd[i]))
 		{
-			if (cmd[i])
-			{
-				while (cmd[i + j] && cmd[i + j] == ' ')
-					j++;
-				if (!cmd[i + j])
-					return (NULL);
-			}
-			ops = set_ops(cmd, i);
-			ft_lstadd_back(&list, ft_lstnew(ops));
+			if (add_list(&list, cmd, i))
+				return (NULL);
 			if (!cmd[i])
 				return (list);
 			if (cmd[i] && (cmd[i + 1] == '>' || cmd[i + 1] == '<'))
@@ -186,7 +116,6 @@ t_list	*parse_option(char *cmd)
 			cmd += i + 1;
 			i = 0;
 		}
-		i++;
 	}
 	return (list);
 }

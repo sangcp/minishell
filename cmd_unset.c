@@ -40,12 +40,11 @@ char	**rm_env(char **evs, char *arg)
 	return (ret);
 }
 
-int	cmd_unset(t_shell *mini, char **envp)
+int	cmd_unset(t_shell *mini)
 {
 	int	i;
 
 	i = 1;
-	(void)envp;
 	if (mini->args[1] == NULL)
 		return (0);
 	while (mini->args[i] != NULL)

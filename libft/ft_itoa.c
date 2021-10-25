@@ -14,14 +14,20 @@
 
 long int	ft_abs(long int n)
 {
-	return ((n < 0) ? -n : n);
+	if (n < 0)
+		return (-n);
+	else
+		return (n);
 }
 
-int			ft_len(int n)
+int	ft_len(int n)
 {
-	int		len;
+	int	len;
 
-	len = (n <= 0) ? 1 : 0;
+	if (n <= 0)
+		len = 1;
+	else
+		len = 0;
 	while (n != 0)
 	{
 		n = n / 10;
@@ -30,13 +36,16 @@ int			ft_len(int n)
 	return (len);
 }
 
-char		*ft_itoa(int n)
+char	*ft_itoa(int n)
 {
 	int		len;
 	int		sign;
 	char	*c;
 
-	sign = (n < 0) ? -1 : 1;
+	if (n < 0)
+		sign = -1;
+	else
+		sign = 1;
 	len = ft_len(n);
 	if (sign == -1)
 		n *= -1;
