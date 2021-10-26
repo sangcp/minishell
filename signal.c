@@ -23,7 +23,7 @@ void	pipe_sighandler2(int sig)
 {
 	if (sig == SIGQUIT)
 	{
-		ft_putstr_fd("Quit: 3\n", 1);
+		ft_putstr_fd("^\\Quit: 3\n", 1);
 		signal(SIGQUIT, &sighandler2);
 	}
 }
