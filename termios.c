@@ -40,13 +40,13 @@ void	init_term_env(t_shell *mini, char **envp)
 	tcgetattr(STDIN_FILENO, &mini->t_sv);
 	tcgetattr(STDIN_FILENO, &mini->term);
 	mini->term.c_lflag &= ~ICANON;
-	/*mini->term.c_lflag &= ~ECHO;*/
 	mini->term.c_lflag &= ~ECHOCTL;
 	mini->term.c_cc[VMIN] = 1;
 	mini->term.c_cc[VTIME] = 0;
 	tcsetattr(STDIN_FILENO, TCSANOW, &mini->term);
-	//tgetent(NULL, "xterm");
 }
+
+//tgetent(NULL, "xterm");
 
 void	restore_term(t_shell *mini)
 {
