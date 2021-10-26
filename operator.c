@@ -82,6 +82,7 @@ int	append_output(t_list *list, t_shell *mini)
 	}
 	if (fd == -1)
 		return (-1);
+	ft_putstr_fd(((t_ops *)(list->next->content))->args[0], 1);
 	dup2(fd, STDOUT_FILENO);
 	mini->rv = exec_cmp(mini, mini->args, list);
 	dup2(mini->fds[0], STDOUT_FILENO);

@@ -92,7 +92,7 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 
 int	run_cmd1(t_shell *mini, t_list *list)
 {
-	while (mini->count > 1)
+	while (mini->count > 1)// || ((t_ops *)(list->content))->type > ';')
 	{
 		mini->args = ((t_ops *)(list->content))->args;
 		if (((t_ops *)(list->content))->type > ';')
