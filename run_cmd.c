@@ -106,7 +106,7 @@ int	run_cmd1(t_shell *mini, t_list *list)
 			mini->rv = exec_cmp(mini, mini->args, list);
 		if (mini->rv == -1)
 			return (-1);
-		list = list->next;
+		list_jmp(mini, &list);
 		mini->count = ft_lstsize(list);
 	}
 	if (list && mini->count)

@@ -51,7 +51,15 @@ int	add_list(t_list **list, char *cmd, int i)
 		while (cmd[i + j] && cmd[i + j] == ' ')
 			j++;
 		if (!cmd[i + j])
+		{
+			if (cmd[i] == '<' || cmd[i] == '>')
+			{
+				ft_putstr_fd("minishell: syntax error ", 2);
+				ft_putstr_fd("near unexpected token `newline'\n", 2);
+			}
+			free_list(list);
 			return (1);
+		}
 	}
 	ops = set_ops(cmd, i);
 	ft_lstadd_back(list, ft_lstnew(ops));

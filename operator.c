@@ -41,6 +41,17 @@ int	redirect_output(t_list *list, t_shell *mini)
 	mini->fds[0] = dup(STDOUT_FILENO);
 	filename = ((t_ops *)(list->next->content))->args[0];
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	while (((t_ops *)(list->next->content))->type == '>' || \
+	((t_ops *)(list->next->content))->type == '}')
+	{
+		mini->i++;
+		list = list->next;
+		filename = ((t_ops *)(list->next->content))->args[0];
+		if (((t_ops *)(list->next->content))->type == '>')
+			fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		else
+			fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	}
 	if (fd == -1)
 		return (-1);
 	dup2(fd, STDOUT_FILENO);
@@ -58,6 +69,17 @@ int	append_output(t_list *list, t_shell *mini)
 	mini->fds[0] = dup(STDOUT_FILENO);
 	filename = ((t_ops *)(list->next->content))->args[0];
 	fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	while (((t_ops *)(list->next->content))->type == '>' || \
+	((t_ops *)(list->next->content))->type == '}')
+	{
+		mini->i++;
+		list = list->next;
+		filename = ((t_ops *)(list->next->content))->args[0];
+		if (((t_ops *)(list->next->content))->type == '>')
+			fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		else
+			fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	}
 	if (fd == -1)
 		return (-1);
 	dup2(fd, STDOUT_FILENO);
@@ -75,6 +97,13 @@ int	redirect_input(t_list *list, t_shell *mini)
 	mini->fds[0] = dup(STDIN_FILENO);
 	filename = ((t_ops *)(list->next->content))->args[0];
 	fd = open(filename, O_RDONLY);
+	while (((t_ops *)(list->next->content))->type == '<')
+	{
+		mini->i++;
+		list = list->next;
+		filename = ((t_ops *)(list->next->content))->args[0];
+		fd = open(filename, O_RDONLY);
+	}
 	if (fd == -1)
 	{
 		printf("%s: no such file or directory\n", filename);

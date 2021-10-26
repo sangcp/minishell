@@ -49,6 +49,7 @@ typedef struct s_shell
 	int				stdout;
 	struct termios	term;
 	struct termios	t_sv;
+	int				i;
 }					t_shell;
 
 //---- main.c ---//
@@ -78,6 +79,8 @@ char	*get_env(char **envp, char *option);
 void	exit_shell(void);
 void	reset_fds(t_shell *mini);
 void	mini_c_p(t_shell *mini, t_list *list);
+void	list_jmp(t_shell *mini, t_list **list);
+void	free_list(t_list **list);
 // ------ signal.c -----//
 
 void	sighandler1(int sig);

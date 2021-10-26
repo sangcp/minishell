@@ -24,4 +24,36 @@ void	mini_c_p(t_shell *mini, t_list *list)
 {
 	mini->prev_pipe = STDIN_FILENO;
 	mini->count = ft_lstsize(list);
+	mini->i = 0;
+}
+
+void	list_jmp(t_shell *mini, t_list **list)
+{
+	*list = (*list)->next;
+	while (mini->i)
+	{
+		*list = (*list)->next;
+		mini->i--;
+	}
+}
+
+void	free_list(t_list **list)
+{
+	t_list	*tlist;
+	int		i;
+
+	tlist = *list;
+	i = 0;
+	while (tlist)
+	{
+		while (((t_ops *)(tlist->content))->args[i])
+			free(((t_ops *)(tlist->content))->args[i++]);
+		free(((t_ops *)(tlist->content))->args);
+		free(((t_ops *)(tlist->content))->operation);
+		free(((t_ops *)(tlist->content))->q_chk);
+		free(((t_ops *)(tlist->content)));
+		free(tlist);
+		tlist = tlist->next;
+		i = 0;
+	}
 }

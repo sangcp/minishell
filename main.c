@@ -62,12 +62,12 @@ char	**q_del(t_shell *mini, t_list *list, char **args)
 	return (tmp);
 }
 
-void	q_chk(t_shell *mini, t_list *list)
+int	q_chk(t_shell *mini, t_list *list)
 {
 	t_list	*tlist;
 
 	if (!list)
-		return ;
+		return (-1);
 	tlist = list;
 	while (tlist)
 	{
@@ -75,6 +75,7 @@ void	q_chk(t_shell *mini, t_list *list)
 		((t_ops *)(tlist->content))->args);
 		tlist = tlist->next;
 	}
+	return (0);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -95,7 +96,7 @@ int	main(int ac, char **av, char **envp)
 		if (*cmd)
 			add_history(rl_line_buffer);
 		list = parse_option(cmd);
-		q_chk(&mini, list);
+		i = q_chk(&mini, list);
 		mini_c_p(&mini, list);
 		restore_term(&mini);
 		i = run_cmd1(&mini, list);
