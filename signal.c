@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 16:23:59 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/15 16:24:00 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/26 15:10:43 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	sighandler2(int sig)
 {
 	if (sig == SIGINT)
 	{
-		ft_putchar_fd('\n', 1);
+		ft_putstr_fd("^C\n", 1);
 		signal(SIGINT, &sighandler2);
 	}
 }

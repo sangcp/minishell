@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/02 03:15:45 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/16 19:40:08 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/26 15:01:49 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,20 @@ static char	**list_to_arr(t_list *list)
 	return (arr);
 }
 
+int	normi(char *line, int i)
+{
+	if (i == 1 && line[i] == ' ' && line[i + 1] != ' ')
+		i--;
+	return (i);
+}
+
 char	**parse_args(char *line, t_ops *ops)
 {
 	t_list	*list;
 	int		i;
 
 	i = -1;
+	list = NULL;
 	while (line[++i])
 	{
 		ops->in_quotes = 0;
@@ -53,8 +61,7 @@ char	**parse_args(char *line, t_ops *ops)
 			break ;
 		if (line_chk(line, i))
 		{
-			if (i == 1 && line[i] == ' ' && line[i + 1] != ' ')
-				i--;
+			i = normi(line, i);
 			if (line[0] == '\"' || line[0] == '\'')
 				i = quote_skip(line, i, line[0], ops);
 			ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 0, i + 1)));
