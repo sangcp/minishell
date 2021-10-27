@@ -104,6 +104,7 @@ int		append_output(t_list *list, t_shell *shell);
 int		redirect_output(t_list *list, t_shell *shell);
 int		operator_pipe(t_list *list, t_shell *mini);
 int		append_input(t_shell *mini, t_list *list);
+void	make_heredoc(t_shell *mini, t_list *list);
 
 // ---- term.c ---//
 void	init_term_env(t_shell *mini, char **envp);
@@ -133,5 +134,8 @@ void	swap_cha(char **desen_envp, int i, int j);
 int		operator_exec1(t_list *list, t_shell *mini);
 int		multi_oper(t_list *list, t_shell *mini);
 int		operator_exec(t_list *list, t_shell *mini);
+// --- multi_oper_utils.c
+int		multi_chk1(t_list *list);
+int		multi_chk2(t_list *list);
 
 #endif

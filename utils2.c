@@ -30,7 +30,7 @@ void	mini_c_p(t_shell *mini, t_list *list)
 void	list_jmp(t_shell *mini, t_list **list)
 {
 	*list = (*list)->next;
-	while (mini->i)
+	while (mini->i > 0)
 	{
 		*list = (*list)->next;
 		mini->i--;

@@ -117,9 +117,32 @@ int	redirect_input(t_list *list, t_shell *mini)
 	return (0);
 }
 
-int	append_input(t_shell *mini, t_list *list)
+void	make_heredoc(t_shell *mini, t_list *list)
 {
 	char	*str;
+	int		fd;
+
+	(void)mini;
+	fd = open(((t_ops *)(list->next->content))->args[0], \
+	O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (fd < 0)
+		exit(1);
+	str = readline("> ");
+	while (str != NULL && ft_strcmp(str, \
+	((t_ops *)(list->next->content))->args[0]))
+	{
+		write(fd, str, ft_strlen(str));
+		write(fd, "\n", 1);
+		free(str);
+		str = readline("> ");
+	}
+	free(str);
+	close(fd);
+}
+
+int	append_input(t_shell *mini, t_list *list)
+{
+	/*char	*str;
 	int		fd;
 
 	fd = open(((t_ops *)(list->next->content))->args[0], \
@@ -136,7 +159,8 @@ int	append_input(t_shell *mini, t_list *list)
 		str = readline("> ");
 	}
 	free(str);
-	close(fd);
+	close(fd);*/
+	make_heredoc(mini, list);
 	redirect_input(list, mini);
 	unlink(((t_ops *)(list->next->content))->args[0]);
 	return (1);

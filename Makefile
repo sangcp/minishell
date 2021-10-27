@@ -33,7 +33,8 @@ SRCS = cmd_env.c\
 		cmd_pwd.c\
 		parse_utils.c\
 		export_utils.c\
-		multi_oper.c
+		multi_oper.c\
+		multi_oper_utils.c
 
 SRCDIR = ./
 SRCNAMES = $(shell ls $(SRCDIR) | grep -E ".+\.c")
@@ -54,6 +55,10 @@ CFLAGS = -Wall -Werror -Wextra
 #READ2 = -I$(HOME)/.brew/opt/readline/include
 READ = -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
 READ2 = -I/opt/homebrew/opt/readline/include
+#READ = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
+#READ2 = -I/usr/local/opt/readline/include
+
+
 
 # Debugging flags
 DEBUG = -g
