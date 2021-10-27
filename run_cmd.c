@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 10:03:38 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/16 18:23:23 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/27 19:40:43 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int	run_cmd1(t_shell *mini, t_list *list)
 {
 	while (mini->count > 1)
 	{
+		mini->here_ck = 0;
 		mini->args = ((t_ops *)(list->content))->args;
 		if (((t_ops *)(list->content))->type > ';')
 		{

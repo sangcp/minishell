@@ -42,6 +42,7 @@ typedef struct s_shell
 	char			**c_evs;
 	char			**heredoc_name;
 	char			*q_c;
+	int				here_ck;
 	int				rv;
 	int				fds[2];
 	int				prev_pipe;

@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 02:44:00 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/27 17:56:32 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/27 19:46:54 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	operator_exec1(t_list *list, t_shell *mini)
 	else
 		return (-1);
 }
+
 void	m_chk(t_list *list, t_shell *mini)
 {
 	t_list	*tlist;
@@ -155,9 +156,11 @@ void	heredoc_chk(t_list *list, t_shell *mini)
 		tlist = tlist->next;
 	}
 	if (here > 0)
+	{
 		mini->heredoc_name = (char **)malloc(sizeof(char *) * (here + 1));
+		mini->here_ck = 1;
+	}
 	tlist = list;
-	mini->heredoc_name[here] = NULL;
 	here = 0;
 	while (tlist)
 	{
@@ -165,6 +168,7 @@ void	heredoc_chk(t_list *list, t_shell *mini)
 		{
 			make_heredoc(mini, tlist);
 			mini->heredoc_name[here++] = ft_strdup(((t_ops *)(tlist->next->content))->args[0]);
+			mini->heredoc_name[here] = NULL;
 		}
 		tlist = tlist->next;
 	}
@@ -196,8 +200,6 @@ int	operator_exec(t_list *list, t_shell *mini)
 	else if (((t_ops *)(list->content))->type == '<' || \
 	((t_ops *)(list->content))->type == '{')
 		return (redirect_input(list, mini));
-	/*else if (((t_ops *)(list->content))->type == '{')
-		return (append_input(mini, list));*/
 	else
 		return (-1);
 }

@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 03:58:15 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/27 18:15:26 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/27 20:01:40 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ void	list_jmp(t_shell *mini, t_list **list)
 		*list = (*list)->next;
 		mini->i--;
 	}
-	while (mini->heredoc_name[++i])
+	while (mini->here_ck && mini->heredoc_name[++i])
 	{
 		unlink(mini->heredoc_name[i]);
 		free(mini->heredoc_name[i]);
 	}
-	if (mini->heredoc_name)
+	if (mini->here_ck && mini->heredoc_name)
 		free(mini->heredoc_name);
 }
 
