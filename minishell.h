@@ -38,11 +38,9 @@ typedef struct s_shell
 {
 	t_list			*ops;
 	char			**args;
-	char			**evs;
-	char			**c_evs;
 	char			**heredoc_name;
+	char			**c_evs;
 	char			*q_c;
-	int				here_ck;
 	int				rv;
 	int				fds[2];
 	int				prev_pipe;
@@ -52,6 +50,7 @@ typedef struct s_shell
 	struct termios	term;
 	struct termios	t_sv;
 	int				i;
+	int				here_ck;
 }					t_shell;
 
 //---- main.c ---//

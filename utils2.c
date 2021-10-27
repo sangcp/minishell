@@ -18,6 +18,7 @@ void	reset_fds(t_shell *mini)
 	dup2(mini->fds[1], 1);
 	dup2(mini->stdinp, 0);
 	dup2(mini->stdout, 1);
+	//printf("%d %d %d %d\n",mini->fds[0],mini->fds[1], mini->stdinp,mini->stdout);
 }
 
 void	mini_c_p(t_shell *mini, t_list *list)
