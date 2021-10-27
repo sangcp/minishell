@@ -6,7 +6,7 @@
 #    By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/26 22:48:03 by sangcpar          #+#    #+#              #
-#    Updated: 2021/10/26 14:39:59 by sangcpar         ###   ########.fr        #
+#    Updated: 2021/10/27 13:58:02 by sangcpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,10 +51,10 @@ LIBINC = ./libft/
 # Optimization and Compiler flags and commands
 CC = gcc -g
 CFLAGS = -Wall -Werror -Wextra
-#READ = -lreadline -L$(HOME)/.brew/opt/readline/lib -I$(HOME)/.brew/opt/readline/include
-#READ2 = -I$(HOME)/.brew/opt/readline/include
-READ = -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
-READ2 = -I/opt/homebrew/opt/readline/include
+READ = -lreadline -L$(HOME)/.brew/opt/readline/lib -I$(HOME)/.brew/opt/readline/include
+READ2 = -I$(HOME)/.brew/opt/readline/include
+#READ = -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
+#READ2 = -I/opt/homebrew/opt/readline/include
 #READ = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
 #READ2 = -I/usr/local/opt/readline/include
 

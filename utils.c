@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 16:21:04 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/15 16:21:06 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/10/27 18:11:23 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	free_all(t_shell *mini, t_list *list, char *cmd)
 	t_list	*tlist;
 	int		i;
 
-	(void)mini;
 	free(cmd);
+	(void)mini;
 	i = 0;
 	if (list == NULL)
 		return ;
