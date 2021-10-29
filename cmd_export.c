@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	envp_dup(char **envp, char **env, char *new_env, int j)
+void	envp_strdup(char **envp, char **env, char *new_env, int j)
 {
 	int	i;
 	int	k;
@@ -30,6 +30,7 @@ char	**plus_line(char **env, char *new_env)
 {
 	char	**envp;
 	char	*tmp;
+	char	*equl;
 	int		i;
 	int		j;
 
@@ -40,12 +41,16 @@ char	**plus_line(char **env, char *new_env)
 	tmp = ft_substr(new_env, 0, i);
 	i = -1;
 	while (env[++i])
-		if (!ft_strncmp(tmp, env[i], ft_strlen(tmp)))
+	{
+		equl = equal_back(env[i]);
+		if (!ft_strcmp(tmp, equl))
 			j = i;
+		free(equl);
+	}
 	if (j != -1)
 		i--;
 	envp = (char **)malloc(sizeof(char *) * (i + 2));
-	envp_dup(envp, env, new_env, j);
+	envp_strdup(envp, env, new_env, j);
 	path_free(env);
 	free(tmp);
 	return (envp);

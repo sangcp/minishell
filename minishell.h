@@ -73,7 +73,7 @@ void	ef_init(t_ef *ef);
 void	path_free(char **str);
 int		is_quotes(char c);
 
-void	free_all(t_shell *mini, t_list *list, char *cmd);
+void	free_all(t_shell *mini, t_list *list, char **cmd);
 
 // - utils.c
 char	*get_env(char **envp, char *option);
@@ -82,6 +82,7 @@ void	reset_fds(t_shell *mini);
 void	mini_c_p(t_shell *mini, t_list *list);
 void	list_jmp(t_shell *mini, t_list **list);
 void	free_list(t_list **list);
+char	*pipe_join(char **s1, char *s2);
 // ------ signal.c -----//
 
 void	sighandler1(int sig);
@@ -92,7 +93,7 @@ void	pipe_sighandler2(int sig);
 // ----- parse.c ---- //
 
 t_list	*parse(t_shell *mini, char *cmd);
-t_list	*parse_option(char *cmd);
+t_list	*parse_option(char **cmd);
 t_ops	*set_ops(char *cmd, int i);
 
 // ----- run_cmd.c --- //
@@ -123,14 +124,15 @@ int		cmd_echo(t_list *list, char **args);
 int		cmd_pwd(char **args);
 // -- parse_utils.c
 int		add_list(t_list **list, char *cmd, int i);
-int		cmd_chk(char *cmd);
+int		cmd_chk(char **cmd);
 int		quote_skip(char *cmd, int i, char q, t_ops *ops);
 int		line_chk(char *line, int i);
-int		oper_err_msg(char *cmd, int i);
+int		oper_err_msg(char **cmd, int i);
 // -- export_utils.c
 int		check_equal_len(char *str);
 int		swap_envp(char *str1, char *str2);
 void	swap_cha(char **desen_envp, int i, int j);
+char	*equal_back(char *env);
 // --- multi_oper.c
 int		operator_exec1(t_list *list, t_shell *mini);
 int		multi_oper(t_list *list, t_shell *mini);

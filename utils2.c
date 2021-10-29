@@ -18,7 +18,6 @@ void	reset_fds(t_shell *mini)
 	dup2(mini->fds[1], 1);
 	dup2(mini->stdinp, 0);
 	dup2(mini->stdout, 1);
-	//printf("%d %d %d %d\n",mini->fds[0],mini->fds[1], mini->stdinp,mini->stdout);
 }
 
 void	mini_c_p(t_shell *mini, t_list *list)
@@ -67,4 +66,28 @@ void	free_list(t_list **list)
 		tlist = tlist->next;
 		i = 0;
 	}
+}
+
+char	*pipe_join(char **s1, char *s2)
+{
+	size_t	i;
+	size_t	l;
+	char	*a;
+
+	if (!*s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (ft_strdup(*s1));
+	a = (char *)malloc(ft_strlen(*s1) + ft_strlen(s2) + 1);
+	if (!a)
+		return (NULL);
+	i = -1;
+	l = 0;
+	while ((*s1)[++i])
+		a[i] = (*s1)[i];
+	while (s2[l])
+		a[i++] = s2[l++];
+	a[i] = '\0';
+	free(*s1);
+	return (a);
 }

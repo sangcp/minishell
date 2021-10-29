@@ -33,13 +33,13 @@ void	path_free(char **str)
 	}
 }
 
-void	free_all(t_shell *mini, t_list *list, char *cmd)
+void	free_all(t_shell *mini, t_list *list, char **cmd)
 {
 	t_list	*tlist;
 	int		i;
 
-	free(cmd);
 	(void)mini;
+	free(*cmd);
 	i = 0;
 	if (list == NULL)
 		return ;
@@ -63,6 +63,7 @@ char	*get_env(char **envp, char *option)
 	int		i;
 	int		j;
 	char	find[30];
+	char	*equl;
 
 	i = 0;
 	ft_strlcpy(find, option, 30);
@@ -71,11 +72,16 @@ char	*get_env(char **envp, char *option)
 		j = 0;
 		while (envp[i][j] != '=')
 			j++;
-		if (ft_strncmp(find, envp[i], j) == 0)
+		equl = equal_back(envp[i]);
+		if (ft_strcmp(find, equl) == 0)
+		{
+			free(equl);
 			return (envp[i] + j + 1);
+		}
+		free(equl);
 		++i;
 	}
-	return (NULL);
+	return ("");
 }
 
 void	exit_shell(void)

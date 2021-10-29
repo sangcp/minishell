@@ -94,14 +94,7 @@ int	redirect_input(t_list *list, t_shell *mini)
 {
 	int		fd;
 	char	*filename;
-	/*t_list	*tlist;
 
-	tlist = list;
-	while (tlist && ((t_ops *)(tlist))->type != '{')
-		tlist = tlist->next;
-	ft_putchar_fd(((t_ops *)(tlist))->type, 1);
-	if (((t_ops *)(tlist))->type == '{')
-		make_heredoc(mini, tlist);*/
 	mini->fds[0] = dup(STDIN_FILENO);
 	filename = ((t_ops *)(list->next->content))->args[0];
 	fd = open(filename, O_RDONLY);

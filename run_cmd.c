@@ -104,7 +104,10 @@ int	run_cmd1(t_shell *mini, t_list *list)
 				list = list->next;
 		}
 		else
+		{
+			dup2(mini->prev_pipe, STDIN_FILENO);
 			mini->rv = exec_cmp(mini, mini->args, list);
+		}
 		if (mini->rv == -1)
 			return (-1);
 		list_jmp(mini, &list);

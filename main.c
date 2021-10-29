@@ -19,18 +19,153 @@ char	*get_cmd(int ac, char **av)
 	return (cmd);
 }
 
+int	env_chk(char *tmp)
+{
+	int	j;
+
+	j = -1;
+	while (tmp[++j])
+		if (tmp[j] == '$')
+			return (1);
+	return (0);
+}
+
+int	env_len(char *env)
+{
+	int i;
+
+	i = 0;
+	while (env[i] && env[i] != '+')
+		i++;
+	if (env[i])
+		i--;
+	return (i);
+}
+
+char	*red_join(char **s1, char *s2)
+{
+	size_t	i;
+	size_t	l;
+	char	*a;
+
+	a = (char *)malloc(ft_strlen(*s1) + 2);
+	if (!a)
+		return (NULL);
+	i = -1;
+	l = 0;
+	while ((*s1)[++i])
+		a[i] = (*s1)[i];
+	if (s2[l])
+		a[i++] = s2[l++];
+	a[i] = '\0';
+	free(*s1);
+	return (a);
+}
+/*
+char	*env_change(char **tmp, int	i, int qq)
+{
+	int		j;
+	char	*tm;
+	int		chk;
+
+	j = 0;
+	tm = ft_strdup("");
+	while (tmp[i][j] && qq == 0 && env_chk(&tmp[i][j]))
+	{
+		chk = 1;
+		while (tmp[i][j] != '$')
+		{
+			tm = red_join(&tm, tmp[i] + j);
+			printf("tm = (%s) tmp = (%c)\n", tm, tmp[i][j]);
+			j++;
+		}
+		//printf("1 = (%s)\n", get_env(mini->c_evs, ft_substr(tmp[i], j + 1, env_len(tmp[i] + j))));
+		sub = ft_substr(tmp[i], j + 1, env_len(tmp[i] + j));
+		printf("sub = (%s)\n", sub);
+		tm = ft_strjoin(tm, get_env(mini->c_evs, sub), 1);//ft_substr(tmp[i], j + 1, env_len(tmp[i] + j))));
+		if (sub)
+			free(sub);
+		//printf("2 = (%s)\n", ft_substr(tmp[i] + j, j + 1, env_len(tmp[i] + j)));
+		j += env_len(tmp[i] + j);
+		//printf("fin = (%c)\n", tmp[i][j]);
+		if (tmp[i][j + 1])
+			j++;
+		//printf("fin = (%c)\n", tmp[i][j]);
+		else
+		{
+			tmp[i] = tm;
+		}
+		printf("(%s) (%s)\n", tm, (tmp[i] + j + 1));
+		if (tm2)
+			free(tm2);
+		tm2 = ft_strjoin(tm, (tmp[i] + j), 4);
+	}
+	if (chk)
+	{
+		free(tmp[i]);
+		tmp[i] = tm2;
+	}
+}*/
+
 void	q_d(t_shell *mini, char **args, char **tmp, int i)
 {
+	char	*tm;
+	int		qq;
+	int		j;
+	char	*tm2 = NULL;
+	char	*sub;
+	int		chk = 0;
+	(void)mini;
+	/*if (args[i][0] == '\"' && args[i][1] == '$')
+		tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 2));*/
+	qq = 0;
+	if (args[i][0] == '\'')
+		qq = 1;
 	if (args[i][0] == '\"' && args[i][1] == '$')
-		tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 2));
+		tmp[i] = ft_substr(args[i], 1, (ft_strlen(args[i]) - 2));
 	else if (args[i][0] == '\'' && args[i][1] == '$')
 		tmp[i] = ft_substr(args[i], 1, (ft_strlen(args[i]) - 2));
 	else if (args[i][0] == '\'' || args[i][0] == '\"')
 		tmp[i] = ft_substr(args[i], 1, (ft_strlen(args[i]) - 2));
-	else if (args[i][0] == '$' && args[i][1])
-		tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 1));
 	else
 		tmp[i] = ft_strdup(args[i]);
+	/*if ((args[i][0] == '$' && args[i][1]) || (tmp[i][0] == '$' && tmp[i][1] && !qq))
+	{
+		if (args[i][0] == '$')
+			tm = ft_strdup(get_env(mini->c_evs, args[i] + 1));
+		else
+			tm = ft_strdup(get_env(mini->c_evs, tmp[i] + 1));
+		if (tm)
+		{
+			free(tmp[i]);
+			tmp[i] = tm;
+		}
+	}*/
+	j = 0;
+	tm = ft_strdup("");
+	while (tmp[i][j] && qq == 0 && env_chk(&tmp[i][j]))
+	{
+		chk = 1;
+		while (tmp[i][j] != '$')
+			tm = red_join(&tm, tmp[i] + j++);
+		sub = ft_substr(tmp[i], j + 1, env_len(tmp[i] + j));
+		tm = ft_strjoin(tm, get_env(mini->c_evs, sub), 1);
+		if (sub)
+			free(sub);
+		j += env_len(tmp[i] + j);
+		if (tmp[i][j + 1])
+			j++;
+		if (tm2)
+			free(tm2);
+		tm2 = ft_strjoin(tm, (tmp[i] + j), 4);
+	}
+	if (chk)
+	{
+		free(tmp[i]);
+		tmp[i] = ft_strdup(tm2);
+		free(tm2);
+	}
+	free(tm);
 }
 
 char	**q_del(t_shell *mini, t_list *list, char **args)
@@ -51,8 +186,11 @@ char	**q_del(t_shell *mini, t_list *list, char **args)
 	{
 		while (ft_strncmp(line, args[i], ft_strlen(args[i])))
 			line++;
-		if ((line[ft_strlen(args[i]) - 1] == '\"' || \
+		/*if ((line[ft_strlen(args[i]) - 1] == '\"' || \
 		line[ft_strlen(args[i]) - 1] == '\'') \
+		&& line[ft_strlen(args[i])] != ' ')*/
+		if ((line[ft_strlen(args[i]) - 1] || \
+		line[ft_strlen(args[i]) - 1] ) \
 		&& line[ft_strlen(args[i])] != ' ')
 			((t_ops *)(list->content))->q_chk[i] = '0';
 		q_d(mini, args, tmp, i);
@@ -95,12 +233,12 @@ int	main(int ac, char **av, char **envp)
 		cmd = get_cmd(ac, av);
 		if (*cmd)
 			add_history(rl_line_buffer);
-		list = parse_option(cmd);
+		list = parse_option(&cmd);
 		i = q_chk(&mini, list);
 		mini_c_p(&mini, list);
 		restore_term(&mini);
 		i = run_cmd1(&mini, list);
-		free_all(&mini, list, cmd);
+		free_all(&mini, list, &cmd);
 		reset_fds(&mini);
 		if (i == -1)
 			break ;

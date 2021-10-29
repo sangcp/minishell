@@ -43,6 +43,19 @@ int	normi(char *line, int i)
 	return (i);
 }
 
+int	test_i(char *line)
+{
+	int	i;
+
+	i = 0;
+	if (line[i] == '$')
+		i++;
+	while (line[i] && line[i] != ' ' && (line[i] != '\'' && line[i] != '\"' && line[i] != '$'))
+		i++;
+	i--;
+	return (i);
+}
+
 char	**parse_args(char *line, t_ops *ops)
 {
 	t_list	*list;
@@ -61,10 +74,23 @@ char	**parse_args(char *line, t_ops *ops)
 			break ;
 		if (line_chk(line, i))
 		{
-			i = normi(line, i);
 			if (line[0] == '\"' || line[0] == '\'')
-				i = quote_skip(line, i, line[0], ops);
+			{
+				if (line[0] == line[1])
+				{
+					line += 2;
+					i = test_i(line);
+				}
+				else
+					i = quote_skip(line, i, line[0], ops);
+			}
+			else if (line[0] == '$')
+				i = test_i(line);
+			else
+				i = test_i(line);
+			//i = normi(line, i);
 			ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 0, i + 1)));
+			//printf("%d %s\n", i, ft_substr(line, 0, i + 1));
 			line += i + 1;
 			i = -1;
 		}
@@ -98,16 +124,18 @@ t_ops	*set_ops(char *cmd, int i)
 	return (ops);
 }
 
-t_list	*parse_option(char *cmd)
+t_list	*parse_option(char **command)
 {
 	t_list	*list;
 	t_ops	ops;
 	int		i;
+	char	*cmd;
 
 	i = 0;
 	list = NULL;
-	if (cmd_chk(cmd))
+	if (cmd_chk(command))
 		return (NULL);
+	cmd = *command;
 	while (1)
 	{
 		if (cmd[++i] == '\'' || cmd[i] == '\"')

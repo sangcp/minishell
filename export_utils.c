@@ -42,3 +42,15 @@ void	swap_cha(char **desen_envp, int i, int j)
 	desen_envp[i] = desen_envp[j];
 	desen_envp[j] = tmp;
 }
+
+char	*equal_back(char *env)
+{
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	while (env[i] && env[i] != '=')
+		i++;
+	tmp = ft_substr(env, 0, i);
+	return (tmp);
+}

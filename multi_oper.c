@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
 int	operator_exec1(t_list *list, t_shell *mini)
 {
 	if (((t_ops *)(list->content))->type == '|')
@@ -26,7 +26,7 @@ int	operator_exec1(t_list *list, t_shell *mini)
 		return (append_input(mini, list));
 	else
 		return (-1);
-}
+}*/
 
 void	m_chk(t_list *list, t_shell *mini)
 {
@@ -50,8 +50,6 @@ int	multi_pipe(t_list *list, t_shell *mini)
 {
 	pid_t	pid;
 
-	/*if (((t_ops *)(list->content))->type == '{')
-		make_heredoc(mini, list);*/
 	m_chk(list, mini);
 	mini->args = ((t_ops *)(list->content))->args;
 	pipe(((t_ops *)(list->content))->fds);
@@ -71,35 +69,6 @@ int	multi_pipe(t_list *list, t_shell *mini)
 		unlink(((t_ops *)(list->next->content))->args[0]);
 	return (0);
 }
-/*
-int	multi_input(t_list *list, t_shell *mini)
-{
-	int		fd;
-	char	*filename;
-
-	if (((t_ops *)(list->content))->type == '{')
-		make_heredoc(mini, list);
-	mini->fds[0] = dup(STDIN_FILENO);
-	filename = ((t_ops *)(list->next->content))->args[0];
-	fd = open(filename, O_RDONLY);
-	while (((t_ops *)(list->next->content))->type == '<')
-	{
-		mini->i++;
-		list = list->next;
-		filename = ((t_ops *)(list->next->content))->args[0];
-		fd = open(filename, O_RDONLY);
-	}
-	if (fd == -1)
-	{
-		printf("%s: no such file or directory\n", filename);
-		return (-1);
-	}
-	dup2(fd, STDIN_FILENO);
-	mini->rv = exec_cmp(mini, mini->args, list);
-	dup2(mini->fds[0], STDIN_FILENO);
-	close(fd);
-	return (0);
-}*/
 
 int	multi_red(t_shell *mini, t_list *list)
 {
@@ -108,21 +77,18 @@ int	multi_red(t_shell *mini, t_list *list)
 	t_list	*tlist;
 
 	tlist = list;
-	/*if (tlist && (((t_ops *)(tlist->content))->type != '{' || \
-	((t_ops *)(tlist->content))->type != '<'))
-	{
-		ft_putstr_fd("aaaa\n", 1);
-		tlist = tlist->next;
-	}*/
-	while (((t_ops *)(list->content))->type != '>')
+	while (((t_ops *)(list->content))->type != '>' && \
+	((t_ops *)(list->content))->type != '}')
 		list = list->next;
 	mini->fds[0] = dup(STDOUT_FILENO);
 	filename = ((t_ops *)(list->next->content))->args[0];
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	if (((t_ops *)(list->content))->type == '>')
+		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	else if (((t_ops *)(list->content))->type == '}')
+		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	while (((t_ops *)(list->next->content))->type == '>' || \
 	((t_ops *)(list->next->content))->type == '}')
 	{
-
 		mini->i++;
 		list = list->next;
 		filename = ((t_ops *)(list->next->content))->args[0];
@@ -172,17 +138,29 @@ void	heredoc_chk(t_list *list, t_shell *mini)
 		}
 		tlist = tlist->next;
 	}
-	/*while (tlist && ((t_ops *)(tlist->content))->type != '{')
-		tlist = tlist->next;
-	if (tlist && ((t_ops *)(tlist->content))->type == '{')
+}
+
+int	input_num(t_list *list)
+{
+	t_list	*tlist;
+	int		num;
+
+	num = 0;
+	tlist = list;
+	while (tlist)
 	{
-		make_heredoc(mini, tlist);
-		mini->heredoc_name = ((t_ops *)(tlist->next->content))->args[0]
-	}*/
+		if (((t_ops *)(tlist->content))->type == '<' || \
+		((t_ops *)(tlist->content))->type == '{')
+			num++;
+		tlist = tlist->next;
+	}
+	return (num - 1);
 }
 
 int	operator_exec(t_list *list, t_shell *mini)
 {
+	int	i;
+
 	heredoc_chk(list, mini);
 	if (multi_chk1(mini, list))
 	{
@@ -190,7 +168,13 @@ int	operator_exec(t_list *list, t_shell *mini)
 		return (multi_red(mini, list));
 	}
 	else if (multi_chk2(mini, list))
-		return (multi_pipe(list, mini));
+	{
+		i = multi_pipe(list, mini);
+		mini->i = input_num(list);
+		if (i == -1)
+			return (-1);
+		return (0);
+	}
 	else if (((t_ops *)(list->content))->type == '|')
 		return (operator_pipe(list, mini));
 	else if (((t_ops *)(list->content))->type == '>')

@@ -12,31 +12,97 @@
 
 #include "minishell.h"
 
-int	oper_err_msg(char *cmd, int i)
+void	join_cmd(char **cmd, char q)
 {
-	if (ft_strchr("<>|;", cmd[i]))
+	char	*tmp;
+	int		i;
+
+	tmp = readline("> ");
+	while (1)
+	{
+		*cmd = pipe_join(cmd, tmp);
+		free(tmp);
+		i = 0;
+		while ((*cmd)[i])
+			i++;
+		if ((*cmd)[i - 1] == q)
+			break ;
+		tmp = readline("> ");
+	}
+}
+
+void	q_count(char **cmd)
+{
+	int		i;
+	char	q;
+
+	i = -1;
+	while ((*cmd)[++i])
+	{
+		if ((*cmd)[i] == '\'' || (*cmd)[i] == '\"')
+		{
+			q = (*cmd)[i];
+			i++;
+			while ((*cmd)[i] != '\0' && (*cmd)[i] != q)
+				i++;
+			if ((*cmd)[i] == '\0')
+				join_cmd(cmd, q);
+			break ;
+		}
+	}
+}
+
+void	plus_cmd(char **cmd)
+{
+	char	*tmp;
+	int		j;
+
+	j = 1;
+	while ((*cmd)[ft_strlen(*cmd) - j] == ' ')
+		j++;
+	if ((*cmd)[ft_strlen(*cmd) - j] == '|')
+	{
+		tmp = readline("pipe> ");
+		while (1)
+		{
+			*cmd = pipe_join(cmd, tmp);
+			free(tmp);
+			while ((*cmd)[ft_strlen(*cmd) - j] == ' ')
+				j++;
+			if ((*cmd)[ft_strlen(*cmd) - j] != '|')
+				break ;
+			tmp = readline("pipe> ");
+		}
+	}
+	q_count(cmd);
+}
+
+int	oper_err_msg(char **cmd, int i)
+{
+	if (ft_strchr("<>|;", (*cmd)[i]))
 	{
 		i++;
-		if (cmd[0] == '|' || cmd[0] == ';')
+		if ((*cmd)[0] == '|' || (*cmd)[0] == ';')
 		{
 			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
-			printf("\'%c\'\n", cmd[0]);
+			printf("\'%c\'\n", (*cmd)[0]);
 			return (1);
 		}
-		while (cmd[i] == '<' || cmd[i] == '>')
+		while ((*cmd)[i] == '<' || (*cmd)[i] == '>')
 			i++;
-		while (cmd[i] && cmd[i] == ' ')
+		while ((*cmd)[i] && (*cmd)[i] == ' ')
 			i++;
-		if (!cmd[i])
+		if (!(*cmd)[i])
 		{
 			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
-			if (cmd[0] == '<' || cmd[0] == '>')
+			if ((*cmd)[0] == '<' || (*cmd)[0] == '>')
 				ft_putstr_fd("\'newline\'\n", 2);
 			else
-				printf("\'%c\'\n", cmd[0]);
+				printf("\'%c\'\n", (*cmd)[0]);
 			return (1);
 		}
 	}
+	plus_cmd(cmd);
 	return (0);
 }
 
@@ -66,16 +132,16 @@ int	add_list(t_list **list, char *cmd, int i)
 	return (0);
 }
 
-int	cmd_chk(char *cmd)
+int	cmd_chk(char **cmd)
 {
 	int	i;
 
 	i = 0;
-	if (!ft_strcmp(cmd, ""))
+	if (!ft_strcmp(*cmd, ""))
 		return (1);
-	while (cmd[i] == ' ')
+	while ((*cmd)[i] == ' ')
 		i++;
-	if (!cmd[i])
+	if (!(*cmd)[i])
 		return (1);
 	i = 0;
 	if (oper_err_msg(cmd, i))

@@ -12,15 +12,15 @@
 
 #include "minishell.h"
 
-void	print_echo(char **str, int i)
+void	print_echo1(char **str, int i)
 {
-	int	starts_qu;
-	int	ends_qu;
-	int	len;
+	//int	starts_qu;
+	//int	ends_qu;
+	//int	len;
 	int	j;
 
 	j = -1;
-	if (!str[i])
+	/*if (!str[i])
 		return ;
 	starts_qu = is_quotes(str[i][0]);
 	len = (int)ft_strlen(str[i]);
@@ -36,7 +36,9 @@ void	print_echo(char **str, int i)
 		while (str[i][++j])
 			if (str[i][j] != '\'' && str[i][j] != '\"')
 				ft_putchar_fd(str[i][j], 1);
-	}
+	}*/
+	while (str[i][++j])
+		ft_putchar_fd(str[i][j], 1);
 }
 
 int	cmd_echo(t_list *list, char **args)
@@ -57,7 +59,7 @@ int	cmd_echo(t_list *list, char **args)
 		i++;
 	while (args[i])
 	{
-		print_echo(args, i);
+		print_echo1(args, i);
 		if (args[i + 1] && ((t_ops *)(list->content))->q_chk[i] != '0')
 			ft_putchar_fd(' ', 1);
 		i++;
