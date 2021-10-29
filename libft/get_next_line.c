@@ -59,7 +59,7 @@ int	get_next_line1(const int fd, char **line)
 	while (rd_ret > 0)
 	{
 		buf[rd_ret] = 0;
-		tmp = ft_strjoin(cpy[fd], buf);
+		tmp = ft_strjoin(cpy[fd], buf, 4);
 		free(cpy[fd]);
 		cpy[fd] = tmp;
 		if (ft_strchr(buf, ENDL))
