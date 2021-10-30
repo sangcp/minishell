@@ -24,7 +24,7 @@ int	cmd_cd(char **args, char **envp)
 {
 	if (args[1][0] == '~')
 	{
-		if ((chdir(ft_strjoin(get_env(envp, "HOME"), get_path(args)))) == -1)
+		if ((chdir(ft_strjoin(get_env(envp, "HOME"), get_path(args), 4))) == -1)
 			ft_putstr_fd("cd fail\n", 2);
 		return (0);
 	}

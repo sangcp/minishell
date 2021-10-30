@@ -11,6 +11,57 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+/*
+char	**rm_env(char **evs, char *arg)
+{
+	int		i;
+	int		j;
+	int		k;
+	char	**ret;
+	char	**tmp;
+	char	*equl;
+
+	tmp = evs;
+	i = 0;
+	k = -1;
+	while (evs[i])
+		i++;
+	ret = malloc((sizeof(char *)) * i);
+	i = 0;
+	while (evs[++k])
+	{
+		equl = NULL;
+		j = 0;
+		while (evs[k][j] && evs[k][j] != '=')
+			j++;
+		equl = equal_back(evs[k]);
+		if (ft_strcmp(equl, arg))
+			ret[i++] = ft_strdup(evs[k]);
+		free(equl);
+	}
+	ret[i] = NULL;
+	path_free(tmp);
+	return (ret);
+}*/
+int	env_count(char **evs, char *arg)
+{
+	int	i;
+	int	j;
+	int	k;
+
+	i = 0;
+	k = -1;
+	while (evs[++k])
+	{
+		j = 0;
+		while (evs[k][j] && evs[k][j] != '=')
+			j++;
+		if (ft_strncmp(evs[k], arg, j + 1) != '=' && \
+		!(!ft_strncmp(evs[k], arg, j) && !arg[j] && !evs[k][j]))
+			i++;
+	}
+	return (i);
+}
 
 char	**rm_env(char **evs, char *arg)
 {
@@ -23,16 +74,17 @@ char	**rm_env(char **evs, char *arg)
 	tmp = evs;
 	i = 0;
 	k = -1;
-	while (evs[i])
-		i++;
-	ret = malloc((sizeof(char *)) * i);
+	i = env_count(evs, arg);
+	printf("(%d)\n", i);
+	ret = malloc((sizeof(char *)) * (i + 1));
 	i = 0;
 	while (evs[++k])
 	{
 		j = 0;
 		while (evs[k][j] && evs[k][j] != '=')
 			j++;
-		if (ft_strcmp(equal_back(evs[k]), arg))
+		if (ft_strncmp(evs[k], arg, j + 1) != '=' && \
+		!(!ft_strncmp(evs[k], arg, j) && !arg[j] && !evs[k][j]))
 			ret[i++] = ft_strdup(evs[k]);
 	}
 	ret[i] = NULL;

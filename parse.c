@@ -48,9 +48,9 @@ int	test_i(char *line)
 	int	i;
 
 	i = 0;
-	if (line[i] == '$')
-		i++;
-	while (line[i] && line[i] != ' ' && (line[i] != '\'' && line[i] != '\"' && line[i] != '$'))
+	/*if (line[i] == '$')
+		i++;*/
+	while (line[i] && line[i] != ' ' && (line[i] != '\'' && line[i] != '\"'))// && line[i] != '$'))
 		i++;
 	i--;
 	return (i);

@@ -29,13 +29,14 @@ int	env_chk(char *tmp)
 			return (1);
 	return (0);
 }
-
 int	env_len(char *env)
 {
 	int i;
 
 	i = 0;
-	while (env[i] && env[i] != '+')
+	if (env[i] == '$')
+		i++;
+	while (env[i] && ft_isalnum(env[i]))
 		i++;
 	if (env[i])
 		i--;
@@ -61,41 +62,31 @@ char	*red_join(char **s1, char *s2)
 	free(*s1);
 	return (a);
 }
-/*
-char	*env_change(char **tmp, int	i, int qq)
+
+void	env_change(t_shell *mini, char **tmp, int	i, int qq)
 {
 	int		j;
 	char	*tm;
+	char	*tm2;
+	char	*sub;
 	int		chk;
 
 	j = 0;
+	chk = 0;
+	tm2 = NULL;
 	tm = ft_strdup("");
 	while (tmp[i][j] && qq == 0 && env_chk(&tmp[i][j]))
 	{
 		chk = 1;
 		while (tmp[i][j] != '$')
-		{
-			tm = red_join(&tm, tmp[i] + j);
-			printf("tm = (%s) tmp = (%c)\n", tm, tmp[i][j]);
-			j++;
-		}
-		//printf("1 = (%s)\n", get_env(mini->c_evs, ft_substr(tmp[i], j + 1, env_len(tmp[i] + j))));
+			tm = red_join(&tm, tmp[i] + j++);
 		sub = ft_substr(tmp[i], j + 1, env_len(tmp[i] + j));
-		printf("sub = (%s)\n", sub);
-		tm = ft_strjoin(tm, get_env(mini->c_evs, sub), 1);//ft_substr(tmp[i], j + 1, env_len(tmp[i] + j))));
+		tm = ft_strjoin(tm, get_env(mini->c_evs, sub), 1);
 		if (sub)
 			free(sub);
-		//printf("2 = (%s)\n", ft_substr(tmp[i] + j, j + 1, env_len(tmp[i] + j)));
 		j += env_len(tmp[i] + j);
-		//printf("fin = (%c)\n", tmp[i][j]);
-		if (tmp[i][j + 1])
+		if (tmp[i][j])
 			j++;
-		//printf("fin = (%c)\n", tmp[i][j]);
-		else
-		{
-			tmp[i] = tm;
-		}
-		printf("(%s) (%s)\n", tm, (tmp[i] + j + 1));
 		if (tm2)
 			free(tm2);
 		tm2 = ft_strjoin(tm, (tmp[i] + j), 4);
@@ -103,19 +94,21 @@ char	*env_change(char **tmp, int	i, int qq)
 	if (chk)
 	{
 		free(tmp[i]);
-		tmp[i] = tm2;
+		tmp[i] = ft_strdup(tm2);
+		free(tm2);
 	}
-}*/
+	free(tm);
+}
 
 void	q_d(t_shell *mini, char **args, char **tmp, int i)
 {
-	char	*tm;
+	//char	*tm;
 	int		qq;
-	int		j;
+	/*int		j;
 	char	*tm2 = NULL;
 	char	*sub;
-	int		chk = 0;
-	(void)mini;
+	int		chk = 0;*/
+
 	/*if (args[i][0] == '\"' && args[i][1] == '$')
 		tmp[i] = ft_strdup(get_env(mini->c_evs, args[i] + 2));*/
 	qq = 0;
@@ -141,7 +134,8 @@ void	q_d(t_shell *mini, char **args, char **tmp, int i)
 			tmp[i] = tm;
 		}
 	}*/
-	j = 0;
+	env_change(mini, tmp, i, qq);
+	/*j = 0;
 	tm = ft_strdup("");
 	while (tmp[i][j] && qq == 0 && env_chk(&tmp[i][j]))
 	{
@@ -153,7 +147,7 @@ void	q_d(t_shell *mini, char **args, char **tmp, int i)
 		if (sub)
 			free(sub);
 		j += env_len(tmp[i] + j);
-		if (tmp[i][j + 1])
+		if (tmp[i][j])
 			j++;
 		if (tm2)
 			free(tm2);
@@ -165,7 +159,7 @@ void	q_d(t_shell *mini, char **args, char **tmp, int i)
 		tmp[i] = ft_strdup(tm2);
 		free(tm2);
 	}
-	free(tm);
+	free(tm);*/
 }
 
 char	**q_del(t_shell *mini, t_list *list, char **args)
@@ -194,6 +188,8 @@ char	**q_del(t_shell *mini, t_list *list, char **args)
 		&& line[ft_strlen(args[i])] != ' ')
 			((t_ops *)(list->content))->q_chk[i] = '0';
 		q_d(mini, args, tmp, i);
+		printf("tmp=(%s)\n", tmp[i]);
+		line += ft_strlen(args[i]);
 	}
 	tmp[i] = NULL;
 	path_free(args);

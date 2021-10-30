@@ -12,14 +12,21 @@
 
 #include "minishell.h"
 
+int	q_count(char **cmd);
+
 void	join_cmd(char **cmd, char q)
 {
 	char	*tmp;
-	int		i;
+	//int		i;
+	(void)q;
 
 	tmp = readline("> ");
-	while (1)
+	*cmd = pipe_join(cmd, "\n");
+	*cmd = pipe_join(cmd, tmp);
+	free(tmp);
+	/*while (1)
 	{
+		*cmd = pipe_join(cmd, "\n");
 		*cmd = pipe_join(cmd, tmp);
 		free(tmp);
 		i = 0;
@@ -28,15 +35,17 @@ void	join_cmd(char **cmd, char q)
 		if ((*cmd)[i - 1] == q)
 			break ;
 		tmp = readline("> ");
-	}
+	}*/
 }
 
-void	q_count(char **cmd)
+int	q_count(char **cmd)
 {
 	int		i;
+	int		re;
 	char	q;
 
 	i = -1;
+	re = 0;
 	while ((*cmd)[++i])
 	{
 		if ((*cmd)[i] == '\'' || (*cmd)[i] == '\"')
@@ -46,10 +55,14 @@ void	q_count(char **cmd)
 			while ((*cmd)[i] != '\0' && (*cmd)[i] != q)
 				i++;
 			if ((*cmd)[i] == '\0')
+			{
+				re = 1;
 				join_cmd(cmd, q);
+			}
 			break ;
 		}
 	}
+	return (re);
 }
 
 void	plus_cmd(char **cmd)
@@ -74,7 +87,9 @@ void	plus_cmd(char **cmd)
 			tmp = readline("pipe> ");
 		}
 	}
-	q_count(cmd);
+	j = 1;
+	while (j)
+		j = q_count(cmd);
 }
 
 int	oper_err_msg(char **cmd, int i)

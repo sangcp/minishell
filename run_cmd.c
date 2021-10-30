@@ -16,9 +16,9 @@ void	cmd_exec(char *path, t_shell *mini)
 {
 	char	*tmp;
 
-	tmp = ft_strjoin(path, "/");
+	tmp = ft_strjoin(path, "/", 4);
 	path = tmp;
-	tmp = ft_strjoin(path, *mini->args);
+	tmp = ft_strjoin(path, *mini->args, 4);
 	execve(tmp, mini->args, mini->c_evs);
 	if (errno != ENOENT)
 		perror("minishell:");
