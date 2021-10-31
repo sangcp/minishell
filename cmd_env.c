@@ -26,30 +26,40 @@ int	find_equal(char *cmd)
 	return (0);
 }
 
-int	cmd_env(char **args, t_shell *mini)
+void	put_oneenv(char *evs, char *line, int *chk)
 {
-	int	i;
+	int	j;
+
+	j = 0;
+	if (!ft_strncmp(line, evs, ft_strlen(line)))
+	{
+		*chk = 1;
+		while (evs[j] != '=')
+			j++;
+		printf("%s\n", &evs[++j]);
+	}
+}
+
+int	cmd_env(char **args, t_shell *mini, t_list *list)
+{
+	int		i;
+	int		chk;
 
 	i = 0;
-	if (!(ft_strcmp(args[0], "env")))
+	chk = 0;
+	(void)list;
+	if (!(ft_strcmp(args[0], "env")) && !args[1])
+		while (mini->c_evs[i])
+			printf("%s\n", mini->c_evs[i++]);
+	else if (!(ft_strcmp(args[0], "env")) && args[1])
 	{
 		while (mini->c_evs[i])
 		{
-			printf("%s\n", mini->c_evs[i]);
+			put_oneenv(mini->c_evs[i], args[1], &chk);
 			i++;
 		}
-	}
-	else
-	{
-		while (mini->c_evs[i])
-		{
-			printf("%s\n", mini->c_evs[i]);
-			i++;
-		}
-		if (find_equal(mini->c_evs[1]))
-			printf("%s\n", mini->c_evs[1]);
-		else
-			printf("env : %s: No such file or directory\n", mini->c_evs[1]);
+		if (!chk)
+			printf("env : %s: No such file or directory\n", args[1]);
 	}
 	return (1);
 }

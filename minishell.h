@@ -39,6 +39,7 @@ typedef struct s_shell
 	t_list			*ops;
 	char			**args;
 	char			**heredoc_name;
+	char			**asd;
 	char			**c_evs;
 	char			*q_c;
 	int				rv;
@@ -54,8 +55,8 @@ typedef struct s_shell
 }					t_shell;
 
 //---- main.c ---//
-void	cmd_export(t_shell *mini, char **args);
-int		cmd_env(char **args, t_shell *mini);
+void	cmd_export(t_shell *mini, char **args, t_list *list);
+int		cmd_env(char **args, t_shell *mini, t_list *list);
 char	**plus_line(char **env, char *new_env);
 int		print_export(char *str, char **envp);
 
@@ -83,6 +84,7 @@ void	mini_c_p(t_shell *mini, t_list *list);
 void	list_jmp(t_shell *mini, t_list **list);
 void	free_list(t_list **list);
 char	*pipe_join(char **s1, char *s2);
+void	all_fr(char **env, char **tmp);
 // ------ signal.c -----//
 
 void	sighandler1(int sig);
@@ -128,11 +130,18 @@ int		cmd_chk(char **cmd);
 int		quote_skip(char *cmd, int i, char q, t_ops *ops);
 int		line_chk(char *line, int i);
 int		oper_err_msg(char **cmd, int i);
+// -- 2
+int		i_jump(char *line);
+void	cmd_jump(char **cmd, int *i);
+int		quote_skip(char *cmd, int i, char q, t_ops *ops);
+int		q_count(char **cmd);
+
 // -- export_utils.c
 int		check_equal_len(char *str);
 int		swap_envp(char *str1, char *str2);
 void	swap_cha(char **desen_envp, int i, int j);
 char	*equal_back(char *env);
+void	envp_strdup(char **envp, char **env, char *new_env, int j);
 // --- multi_oper.c
 int		operator_exec1(t_list *list, t_shell *mini);
 int		multi_oper(t_list *list, t_shell *mini);
@@ -140,5 +149,15 @@ int		operator_exec(t_list *list, t_shell *mini);
 // --- multi_oper_utils.c
 int		multi_chk1(t_shell *mini, t_list *list);
 int		multi_chk2(t_shell *mini, t_list *list);
-
+int		input_num(t_list *list);
+void	heredoc_count(t_list *list, int *here);
+void	m_chk(t_list *list, t_shell *mini);
+// --- q_del.c
+int		q_chk(t_shell *mini, t_list *list);
+// --- q_del_utils.c
+int		env_chk(t_shell *mini, char *tmp);
+int		env_len(char *env);
+char	*fstr_join(char **s1, char *s2);
+void	fr_jplus(char **tmp, char **sub, char **tm2, int *j);
+void	fr_dup(char **tmp, char **tm2, char **tm, int chk);
 #endif

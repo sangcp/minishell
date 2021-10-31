@@ -36,24 +36,24 @@ static char	**list_to_arr(t_list *list)
 	return (arr);
 }
 
-int	normi(char *line, int i)
+void	add_back(t_list **list, t_ops *ops, char **line, int i)
 {
-	if (i == 1 && line[i] == ' ' && line[i + 1] != ' ')
-		i--;
-	return (i);
-}
-
-int	test_i(char *line)
-{
-	int	i;
-
-	i = 0;
-	/*if (line[i] == '$')
-		i++;*/
-	while (line[i] && line[i] != ' ' && (line[i] != '\'' && line[i] != '\"'))// && line[i] != '$'))
-		i++;
-	i--;
-	return (i);
+	if ((*line)[0] == '\"' || (*line)[0] == '\'')
+	{
+		if ((*line)[0] == (*line)[1])
+		{
+			(*line) += 2;
+			i = i_jump(*line);
+		}
+		else
+			i = quote_skip((*line), i, (*line)[0], ops);
+	}
+	else if ((*line)[0] == '$')
+		i = i_jump(*line);
+	else
+		i = i_jump(*line);
+	ft_lstadd_back(list, ft_lstnew(ft_substr(*line, 0, i + 1)));
+	(*line) += i + 1;
 }
 
 char	**parse_args(char *line, t_ops *ops)
@@ -74,24 +74,7 @@ char	**parse_args(char *line, t_ops *ops)
 			break ;
 		if (line_chk(line, i))
 		{
-			if (line[0] == '\"' || line[0] == '\'')
-			{
-				if (line[0] == line[1])
-				{
-					line += 2;
-					i = test_i(line);
-				}
-				else
-					i = quote_skip(line, i, line[0], ops);
-			}
-			else if (line[0] == '$')
-				i = test_i(line);
-			else
-				i = test_i(line);
-			//i = normi(line, i);
-			ft_lstadd_back(&list, ft_lstnew(ft_substr(line, 0, i + 1)));
-			//printf("%d %s\n", i, ft_substr(line, 0, i + 1));
-			line += i + 1;
+			add_back(&list, ops, &line, i);
 			i = -1;
 		}
 	}
@@ -131,7 +114,7 @@ t_list	*parse_option(char **command)
 	int		i;
 	char	*cmd;
 
-	i = 0;
+	i = -1;
 	list = NULL;
 	if (cmd_chk(command))
 		return (NULL);
@@ -140,16 +123,13 @@ t_list	*parse_option(char **command)
 	{
 		if (cmd[++i] == '\'' || cmd[i] == '\"')
 			i = quote_skip(cmd, i, cmd[i], &ops);
-		else if (!cmd[i] || ft_strchr(";|<>", cmd[i]))
+		else if (!cmd[i] || ft_strchr("|<>", cmd[i]))
 		{
 			if (add_list(&list, cmd, i))
 				return (NULL);
 			if (!cmd[i])
 				return (list);
-			if (cmd[i] && (cmd[i + 1] == '>' || cmd[i + 1] == '<'))
-				cmd += 1;
-			cmd += i + 1;
-			i = 0;
+			cmd_jump(&cmd, &i);
 		}
 	}
 	return (list);

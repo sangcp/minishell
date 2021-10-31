@@ -12,59 +12,6 @@
 
 #include "minishell.h"
 
-int	q_count(char **cmd);
-
-void	join_cmd(char **cmd, char q)
-{
-	char	*tmp;
-	//int		i;
-	(void)q;
-
-	tmp = readline("> ");
-	*cmd = pipe_join(cmd, "\n");
-	*cmd = pipe_join(cmd, tmp);
-	free(tmp);
-	/*while (1)
-	{
-		*cmd = pipe_join(cmd, "\n");
-		*cmd = pipe_join(cmd, tmp);
-		free(tmp);
-		i = 0;
-		while ((*cmd)[i])
-			i++;
-		if ((*cmd)[i - 1] == q)
-			break ;
-		tmp = readline("> ");
-	}*/
-}
-
-int	q_count(char **cmd)
-{
-	int		i;
-	int		re;
-	char	q;
-
-	i = -1;
-	re = 0;
-	while ((*cmd)[++i])
-	{
-		if ((*cmd)[i] == '\'' || (*cmd)[i] == '\"')
-		{
-			q = (*cmd)[i];
-			i++;
-			while ((*cmd)[i] != '\0' && (*cmd)[i] != q)
-				i++;
-			if ((*cmd)[i] == '\0')
-			{
-				re = 1;
-				join_cmd(cmd, q);
-			}
-			break ;
-		}
-	}
-	return (re);
-}
-
 void	plus_cmd(char **cmd)
 {
 	char	*tmp;
@@ -87,37 +34,34 @@ void	plus_cmd(char **cmd)
 			tmp = readline("pipe> ");
 		}
 	}
-	j = 1;
-	while (j)
-		j = q_count(cmd);
 }
 
 int	oper_err_msg(char **cmd, int i)
 {
-	if (ft_strchr("<>|;", (*cmd)[i]))
+	if (ft_strchr("<>|", (*cmd)[i++]))
 	{
-		i++;
-		if ((*cmd)[0] == '|' || (*cmd)[0] == ';')
+		if ((*cmd)[0] == '|')
 		{
-			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
-			printf("\'%c\'\n", (*cmd)[0]);
+			ft_putstr_fd(\
+			"minishell: syntax error near unexpected token '|'\n", 2);
 			return (1);
 		}
-		while ((*cmd)[i] == '<' || (*cmd)[i] == '>')
-			i++;
-		while ((*cmd)[i] && (*cmd)[i] == ' ')
+		while (((*cmd)[i] == '<' || (*cmd)[i] == '>') || \
+		((*cmd)[i] && (*cmd)[i] == ' '))
 			i++;
 		if (!(*cmd)[i])
 		{
-			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
-			if ((*cmd)[0] == '<' || (*cmd)[0] == '>')
-				ft_putstr_fd("\'newline\'\n", 2);
-			else
-				printf("\'%c\'\n", (*cmd)[0]);
+			ft_putstr_fd(\
+			"minishell: syntax error near unexpected token \'newline\'\n", 2);
 			return (1);
 		}
 	}
 	plus_cmd(cmd);
+	if (q_count(cmd))
+	{
+		ft_putstr_fd("minishell: Quotes Error\n", 2);
+		return (1);
+	}
 	return (0);
 }
 
@@ -150,29 +94,28 @@ int	add_list(t_list **list, char *cmd, int i)
 int	cmd_chk(char **cmd)
 {
 	int	i;
+	int	q;
 
 	i = 0;
-	if (!ft_strcmp(*cmd, ""))
-		return (1);
+	q = 0;
+	if ((*cmd)[0] == '\'' || (*cmd)[0] == '\"')
+	{
+		q = 1;
+		i++;
+	}
 	while ((*cmd)[i] == ' ')
 		i++;
 	if (!(*cmd)[i])
 		return (1);
+	if (q && (((*cmd)[i] == '\'' || (*cmd)[i] == '\"') && !(*cmd)[i + 1]))
+	{
+		ft_putstr_fd("minishell:  : command not found\n", 2);
+		return (1);
+	}
 	i = 0;
 	if (oper_err_msg(cmd, i))
 		return (1);
 	return (0);
-}
-
-int	quote_skip(char *cmd, int i, char q, t_ops *ops)
-{
-	ops->in_quotes = 1;
-	while (1)
-	{
-		i++;
-		if (cmd[i] == q)
-			return (i);
-	}
 }
 
 int	line_chk(char *line, int i)

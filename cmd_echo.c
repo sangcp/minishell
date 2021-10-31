@@ -14,29 +14,9 @@
 
 void	print_echo1(char **str, int i)
 {
-	//int	starts_qu;
-	//int	ends_qu;
-	//int	len;
 	int	j;
 
 	j = -1;
-	/*if (!str[i])
-		return ;
-	starts_qu = is_quotes(str[i][0]);
-	len = (int)ft_strlen(str[i]);
-	ends_qu = is_quotes(str[i][len - 1]);
-	if (ends_qu && starts_qu)
-		ft_putnstr(str[i] + 1, -1);
-	else if (ends_qu)
-		ft_putnstr(str[i], -1);
-	else if (starts_qu)
-		ft_putstr_fd(str[i] + 1, 1);
-	else
-	{
-		while (str[i][++j])
-			if (str[i][j] != '\'' && str[i][j] != '\"')
-				ft_putchar_fd(str[i][j], 1);
-	}*/
 	while (str[i][++j])
 		ft_putchar_fd(str[i][j], 1);
 }

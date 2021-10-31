@@ -75,7 +75,6 @@ char	**rm_env(char **evs, char *arg)
 	i = 0;
 	k = -1;
 	i = env_count(evs, arg);
-	printf("(%d)\n", i);
 	ret = malloc((sizeof(char *)) * (i + 1));
 	i = 0;
 	while (evs[++k])

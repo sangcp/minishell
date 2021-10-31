@@ -12,6 +12,19 @@
 
 #include "libft.h"
 
+void	fr_chk(char **s1, char **s2, int f)
+{
+	if (f == 1)
+		free(*s1);
+	if (f == 2)
+		free(*s2);
+	if (f == 3)
+	{
+		free(*s1);
+		free(*s2);
+	}
+}
+
 char	*ft_strjoin(char *s1, char *s2, int f)
 {
 	char	*str;
@@ -37,14 +50,6 @@ char	*ft_strjoin(char *s1, char *s2, int f)
 		j++;
 	}
 	str[i] = '\0';
-	if (f == 1)
-		free(s1);
-	if (f == 2)
-		free(s2);
-	if (f == 3)
-	{
-		free(s1);
-		free(s2);
-	}
+	fr_chk(&s1, &s2, f);
 	return (str);
 }

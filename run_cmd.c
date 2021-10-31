@@ -51,6 +51,11 @@ int	run_cmd2(t_shell *mini, char **envp)
 	if (pid == 0)
 	{
 		path = ft_split2(get_env(envp, "PATH"), ':');
+		if (!path)
+		{
+			printf("minishell: %s: No such file or directory\n", mini->args[0]);
+			return (-1);
+		}
 		bin_chk(mini);
 		while (path[i])
 			cmd_exec(path[i++], mini);
@@ -78,11 +83,11 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 		return (cmd_echo(list, args));
 	if (!(ft_strncmp(args[0], "export", 7)))
 	{
-		cmd_export(mini, args);
+		cmd_export(mini, args, list);
 		return (0);
 	}
 	if (!(ft_strncmp(args[0], "env", 3)))
-		return (cmd_env(args, mini));
+		return (cmd_env(args, mini, list));
 	if (!(ft_strncmp(args[0], "pwd", 3)))
 		return (cmd_pwd(args));
 	if (!(ft_strncmp(args[0], "unset", 5)))
@@ -96,20 +101,13 @@ int	run_cmd1(t_shell *mini, t_list *list)
 	{
 		mini->here_ck = 0;
 		mini->args = ((t_ops *)(list->content))->args;
-		if (((t_ops *)(list->content))->type > ';')
+		dup2(mini->prev_pipe, STDIN_FILENO);
+		if (ft_strchr("|<>{}", ((t_ops *)(list->content))->type))
 		{
-			dup2(mini->prev_pipe, STDIN_FILENO);
 			operator_exec(list, mini);
 			if (((t_ops *)(list->content))->type != '|')
 				list = list->next;
 		}
-		else
-		{
-			dup2(mini->prev_pipe, STDIN_FILENO);
-			mini->rv = exec_cmp(mini, mini->args, list);
-		}
-		if (mini->rv == -1)
-			return (-1);
 		list_jmp(mini, &list);
 		mini->count = ft_lstsize(list);
 	}

@@ -12,20 +12,6 @@
 
 #include "minishell.h"
 
-void	envp_strdup(char **envp, char **env, char *new_env, int j)
-{
-	int	i;
-	int	k;
-
-	i = -1;
-	k = 0;
-	while (env[++i])
-		if (i != j)
-			envp[k++] = ft_strdup(env[i]);
-	envp[k] = ft_strdup(new_env);
-	envp[++k] = NULL;
-}
-
 char	**plus_line(char **env, char *new_env)
 {
 	char	**envp;
@@ -51,8 +37,7 @@ char	**plus_line(char **env, char *new_env)
 		i--;
 	envp = (char **)malloc(sizeof(char *) * (i + 2));
 	envp_strdup(envp, env, new_env, j);
-	path_free(env);
-	free(tmp);
+	all_fr(env, &tmp);
 	return (envp);
 }
 
@@ -111,27 +96,43 @@ void	print_ex(t_shell *mini)
 	}
 }
 
-void	cmd_export(t_shell *mini, char **args)
+int	dol_chk(char *line)
 {
 	int	i;
 
+	i = 7;
+	while (line[i] && line[i] == '$')
+	{
+		if (line[i] == '$' && line[i + 1])
+			return (2);
+		if (line[i] == '$')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	cmd_export(t_shell *mini, char **args, t_list *list)
+{
+	int		i;
+	char	*line;
+
+	i = 0;
+	line = ((t_ops *)(list->content))->operation;
 	mini->c_evs = desending_envp(mini->c_evs);
 	if (!(ft_strcmp(args[0], "export")) && !args[1])
 		print_ex(mini);
-	else if (args[1][0] == '$')
+	else if (!ft_strcmp(args[i], "") && dol_chk(line + 7))
 	{
-		i = 0;
-		if (!args[1][1])
+		if (!args[1][1] && args[1][0] == '$')
 		{
 			printf("minishell: export: `$': not a valid identifier\n");
 			return ;
 		}
 		while (mini->c_evs[i])
-		{
-			printf("declare -x %s\n", mini->c_evs[i]);
-			i++;
-		}
+			printf("declare -x %s\n", mini->c_evs[i++]);
 	}
 	else
-		mini->c_evs = plus_line(mini->c_evs, args[1]);
+		while (args[++i])
+			mini->c_evs = plus_line(mini->c_evs, args[i]);
 }

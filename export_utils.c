@@ -54,3 +54,17 @@ char	*equal_back(char *env)
 	tmp = ft_substr(env, 0, i);
 	return (tmp);
 }
+
+void	envp_strdup(char **envp, char **env, char *new_env, int j)
+{
+	int	i;
+	int	k;
+
+	i = -1;
+	k = 0;
+	while (env[++i])
+		if (i != j)
+			envp[k++] = ft_strdup(env[i]);
+	envp[k] = ft_strdup(new_env);
+	envp[++k] = NULL;
+}
