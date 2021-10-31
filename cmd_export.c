@@ -122,16 +122,6 @@ void	cmd_export(t_shell *mini, char **args, t_list *list)
 	mini->c_evs = desending_envp(mini->c_evs);
 	if (!(ft_strcmp(args[0], "export")) && !args[1])
 		print_ex(mini);
-	else if (!ft_strcmp(args[i], "") && dol_chk(line + 7))
-	{
-		if (!args[1][1] && args[1][0] == '$')
-		{
-			printf("minishell: export: `$': not a valid identifier\n");
-			return ;
-		}
-		while (mini->c_evs[i])
-			printf("declare -x %s\n", mini->c_evs[i++]);
-	}
 	else
 		while (args[++i])
 			mini->c_evs = plus_line(mini->c_evs, args[i]);

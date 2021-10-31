@@ -48,18 +48,8 @@ int	cmd_env(char **args, t_shell *mini, t_list *list)
 	i = 0;
 	chk = 0;
 	(void)list;
-	if (!(ft_strcmp(args[0], "env")) && !args[1])
+	if (!(ft_strcmp(args[0], "env")))
 		while (mini->c_evs[i])
 			printf("%s\n", mini->c_evs[i++]);
-	else if (!(ft_strcmp(args[0], "env")) && args[1])
-	{
-		while (mini->c_evs[i])
-		{
-			put_oneenv(mini->c_evs[i], args[1], &chk);
-			i++;
-		}
-		if (!chk)
-			printf("env : %s: No such file or directory\n", args[1]);
-	}
 	return (1);
 }
