@@ -107,6 +107,26 @@ t_ops	*set_ops(char *cmd, int i)
 	return (ops);
 }
 
+char	*cmd_change(char **cmd)
+{
+	char	*tmp;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	tmp = ft_strdup("");
+	while ((*cmd)[j])
+	{
+		if ((*cmd)[j] != '\'' && (*cmd)[j] != '\"')
+		{
+			tmp = fstr_join(&tmp, &(*cmd)[j]);
+		}
+		j++;
+	}
+	return (tmp);
+}
+
 t_list	*parse_option(char **command)
 {
 	t_list	*list;
@@ -118,7 +138,7 @@ t_list	*parse_option(char **command)
 	list = NULL;
 	if (cmd_chk(command))
 		return (NULL);
-	cmd = *command;
+	cmd = cmd_change(command);
 	while (1)
 	{
 		if (cmd[++i] == '\'' || cmd[i] == '\"')
