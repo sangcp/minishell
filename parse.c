@@ -124,6 +124,7 @@ char	*cmd_change(char **cmd)
 		}
 		j++;
 	}
+	free(*cmd);
 	return (tmp);
 }
 
@@ -138,7 +139,8 @@ t_list	*parse_option(char **command)
 	list = NULL;
 	if (cmd_chk(command))
 		return (NULL);
-	cmd = cmd_change(command);
+	*command = cmd_change(command);
+	cmd = *command;
 	while (1)
 	{
 		if (cmd[++i] == '\'' || cmd[i] == '\"')
