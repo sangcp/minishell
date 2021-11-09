@@ -80,7 +80,10 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 	if (!(ft_strncmp(args[0], "cd", 2)))
 		return (cmd_cd(args, mini->c_evs));
 	if (!(ft_strncmp(args[0], "echo", 4)))
-		return (cmd_echo(list, args));
+	{
+		cmd_echo(list, args);
+		return (0);
+	}
 	if (!(ft_strncmp(args[0], "export", 7)))
 	{
 		cmd_export(mini, args, list);

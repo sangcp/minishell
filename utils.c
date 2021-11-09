@@ -39,7 +39,8 @@ void	free_all(t_shell *mini, t_list *list, char **cmd)
 	int		i;
 
 	(void)mini;
-	free(*cmd);
+	if (*cmd)
+		free(*cmd);
 	i = 0;
 	if (list == NULL)
 		return ;
@@ -48,10 +49,13 @@ void	free_all(t_shell *mini, t_list *list, char **cmd)
 	{
 		while (((t_ops *)(tlist->content))->args[i])
 			free(((t_ops *)(tlist->content))->args[i++]);
-		free(((t_ops *)(tlist->content))->args);
-		free(((t_ops *)(tlist->content))->operation);
-		free(((t_ops *)(tlist->content))->q_chk);
-		free(((t_ops *)(tlist->content)));
+		if (((t_ops *)(tlist->content))->args)
+			free(((t_ops *)(tlist->content))->args);
+		if (((t_ops *)(tlist->content))->operation)
+			free(((t_ops *)(tlist->content))->operation);
+		//free(((t_ops *)(tlist->content))->q_chk);
+		if (((t_ops *)(tlist->content)))
+			free(((t_ops *)(tlist->content)));
 		free(tlist);
 		tlist = tlist->next;
 		i = 0;

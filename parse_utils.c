@@ -120,8 +120,10 @@ int	cmd_chk(char **cmd)
 
 int	line_chk(char *line, int i)
 {
-	return (((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
+	(void)line;
+	/*return (((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
 	(line[i] != ' ' && line[i + 1] == ' ')) && i > 0) || \
 	(i == 0 && line[0] && !line[1]) || \
-	(i == 1 && line[i] == ' ' && line[i + 1] != ' '));
+	(i == 1 && line[i] == ' ' && line[i + 1] != ' '));*/
+	return (i);
 }

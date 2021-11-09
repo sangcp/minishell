@@ -25,6 +25,7 @@ void	main_norm(t_shell *mini, t_list *list, int *i)
 	restore_term(mini);
 	*i = run_cmd1(mini, list);
 }
+// -----
 
 int	main(int ac, char **av, char **envp)
 {
@@ -43,8 +44,9 @@ int	main(int ac, char **av, char **envp)
 		cmd = get_cmd(ac, av);
 		if (*cmd)
 			add_history(rl_line_buffer);
-		list = parse_option(&cmd);
-		i = q_chk(&mini, list);
+		list = parse_option(&mini, &cmd);
+		//i = q_chk(&mini, list);
+		i = 0;
 		if (i != 1)
 			main_norm(&mini, list, &i);
 		free_all(&mini, list, &cmd);

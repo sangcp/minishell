@@ -95,7 +95,7 @@ void	pipe_sighandler2(int sig);
 // ----- parse.c ---- //
 
 t_list	*parse(t_shell *mini, char *cmd);
-t_list	*parse_option(char **cmd);
+t_list	*parse_option(t_shell *mini, char **cmd);
 t_ops	*set_ops(char *cmd, int i);
 
 // ----- run_cmd.c --- //
