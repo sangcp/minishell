@@ -107,11 +107,11 @@ int	cmd_chk(char **cmd)
 		i++;
 	if (!(*cmd)[i])
 		return (1);
-	if (q && (((*cmd)[i] == '\'' || (*cmd)[i] == '\"') && !(*cmd)[i + 1]))
+	/*if (q && (((*cmd)[i] == '\'' || (*cmd)[i] == '\"') && !(*cmd)[i + 1]))
 	{
-		ft_putstr_fd("minishell:  : command not found\n", 2);
+		//ft_putstr_fd("minishell:  : command not found\n", 2);
 		return (1);
-	}
+	}*/
 	i = 0;
 	if (oper_err_msg(cmd, i))
 		return (1);

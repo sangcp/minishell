@@ -53,7 +53,6 @@ void	free_all(t_shell *mini, t_list *list, char **cmd)
 			free(((t_ops *)(tlist->content))->args);
 		if (((t_ops *)(tlist->content))->operation)
 			free(((t_ops *)(tlist->content))->operation);
-		//free(((t_ops *)(tlist->content))->q_chk);
 		if (((t_ops *)(tlist->content)))
 			free(((t_ops *)(tlist->content)));
 		free(tlist);

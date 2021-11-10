@@ -41,10 +41,21 @@ char	*qskip_substr(char const *s, unsigned int start, size_t len)
 	char	*new;
 	size_t	i;
 	size_t	j;
+	char	q;
 
 	new = 0;
 	i = 0;
 	j = 0;
+	if (s[0] == '\'' || s[0] == '\"')
+	{
+		q = s[0];
+		if (s[1] == q && !s[2])
+		{
+			new = (char *)malloc(sizeof(char) * 1);
+			new[0] = '\0';
+			return(new);
+		}
+	}
 	if (s == 0)
 		return (NULL);
 	while (s[j])
@@ -73,6 +84,7 @@ char	*qskip_substr(char const *s, unsigned int start, size_t len)
 
 void	add_back(t_list **list, t_ops *ops, char **line, int i)
 {
+	char q;
 	(void)ops;
 	/*if ((*line)[0] == '\"' || (*line)[0] == '\'')
 	{
@@ -88,9 +100,25 @@ void	add_back(t_list **list, t_ops *ops, char **line, int i)
 		i = i_jump(*line);
 	else
 		i = i_jump(*line);*/
-	while ((*line)[i] && (*line)[i] != ' ')
+	i = 0;
+	while ((*line)[i] == ' ')
 		i++;
+	while ((*line)[i])
+	{
+		if ((*line)[i] == '\'' || (*line)[i] == '\"')
+		{
+			q = (*line)[i++];
+			while ((*line)[i] != q)
+				i++;
+			i++;
+		}
+		else
+			i++;
+		if (!(*line)[i] || (*line)[i] == ' ')
+			break ;
+	}
 	ft_lstadd_back(list, ft_lstnew(qskip_substr(*line, 0, i)));
+	//printf("q = (l=%s)(%d)(%s)\n", *line, i, qskip_substr(*line, 0, i));
 	(*line) += i;
 }
 
@@ -110,7 +138,7 @@ char	**parse_args(char *line, t_ops *ops)
 			line++;
 		if (!line[0])
 			break ;
-		if (line_chk(line, i))
+		if (1)//line_chk(line, i))
 		{
 			add_back(&list, ops, &line, i);
 			i = -1;
@@ -205,6 +233,7 @@ static int	repl_env_name(char *in, int i, char **env, char **val)
 int	repl_env(int i, char **in, t_shell *mini)
 {
 	char	*val;
+	char	*tmp;
 	int		len;
 
 	val = NULL;
@@ -216,36 +245,38 @@ int	repl_env(int i, char **in, t_shell *mini)
 	else
 	{
 		len = repl_env_name(*in, i, mini->c_evs, &val) + 1;
-		*in = repl_change(*in, i, len, val);
+		tmp = repl_change(*in, i, len, val);
+		free(*in);
+		*in = tmp;
 		if (!val)
 			return (0);
 		return (len);
 	}
 }
 
-char	*cmd_change(t_shell *mini, char *in)
+char	*cmd_change(t_shell *mini, char **in)
 {
 	int		i;
 	char	inquotes;
 
 	i = 0;
 	inquotes = 0;
-	while (in && in[i])
+	while ((*in) && (*in)[i])
 	{
-		if (in[i] == '\"' && (i == 0 || (i > 0 && in[i - 1] != '\\')))
+		if ((*in)[i] == '\"' && (i == 0 || (i > 0 && (*in)[i - 1] != '\\')))
 			inquotes = (inquotes + 1) % 2;
-		if (in[i] == '\'' && (i == 0 || (i > 0 && in[i - 1] != '\\')) \
+		if ((*in)[i] == '\'' && (i == 0 || (i > 0 && (*in)[i - 1] != '\\')) \
 			&& !inquotes)
 		{
 			i++;
-			while (!(in[i] == '\'' && in[i - 1] != '\\'))
+			while (!((*in)[i] == '\'' && (*in)[i - 1] != '\\'))
 				i++;
 		}
-		if (in[i] == '$' && in[i + 1] && in[i + 1] != '$')
-			i += repl_env(i, &in, mini) - 1;
+		if ((*in)[i] == '$' && (*in)[i + 1] && (*in)[i + 1] != '$')
+			i += repl_env(i, in, mini) - 1;
 		i++;
 	}
-	return (in);
+	return (*in);
 }
 
 t_list	*parse_option(t_shell *mini, char **command)
@@ -254,14 +285,21 @@ t_list	*parse_option(t_shell *mini, char **command)
 	t_ops	ops;
 	int		i;
 	char	*cmd;
+	char	*ftmp;
 
 	i = -1;
 	list = NULL;
 	(void)mini;
 	if (cmd_chk(command))
 		return (NULL);
-	cmd = *command;
-	cmd = cmd_change(mini, cmd);
+	cmd = ft_strdup(*command);
+	cmd = cmd_change(mini, &cmd);
+	if (!ft_strcmp(cmd, ""))
+	{
+		free(cmd);
+		return (NULL);
+	}
+	ftmp = cmd;
 	while (1)
 	{
 		if (cmd[++i] == '\'' || cmd[i] == '\"')
@@ -271,7 +309,10 @@ t_list	*parse_option(t_shell *mini, char **command)
 			if (add_list(&list, cmd, i))
 				return (NULL);
 			if (!cmd[i])
+			{
+				free(ftmp);
 				return (list);
+			}
 			cmd_jump(&cmd, &i);
 		}
 	}

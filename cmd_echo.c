@@ -27,24 +27,25 @@ int	cmd_echo(t_list *list, char **args)
 	int	i;
 
 	i = 1;
+	(void)list;
 	if (!args[1])
 	{
 		ft_putchar_fd('\n', 1);
 		return (0);
 	}
 	n_flag = 0;
-	if (args[1][0] == '-' && args[1][1] == 'n' && args[1][2] == '\0')
-		n_flag = 1;
-	if (n_flag)
+	if (args[i][0] == '-' && args[i][1] == 'n' && args[i][2] == '\0')
+		n_flag++;
+	while (args[i][0] == '-' && args[i][1] == 'n' && args[i][2] == '\0')
 		i++;
 	while (args[i])
 	{
 		print_echo1(args, i);
-		if (args[i + 1] && ((t_ops *)(list->content))->q_chk[i] != '0')
+		if (args[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
-	if (!n_flag)
+	if (n_flag == 0)
 		ft_putchar_fd('\n', 1);
 	return (0);
 }

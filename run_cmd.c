@@ -57,9 +57,9 @@ int	run_cmd2(t_shell *mini, char **envp)
 			return (-1);
 		}
 		bin_chk(mini);
-		while (path[i])
+		while (path[i] && mini->args[0][0] != '\0')
 			cmd_exec(path[i++], mini);
-		printf("minishell: command not found : %s\n", mini->args[0]);
+		printf("minishell: %s: command not found \n", mini->args[0]);
 		path_free(path);
 		return (-1);
 	}

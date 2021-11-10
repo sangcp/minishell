@@ -60,7 +60,6 @@ void	free_list(t_list **list)
 			free(((t_ops *)(tlist->content))->args[i++]);
 		free(((t_ops *)(tlist->content))->args);
 		free(((t_ops *)(tlist->content))->operation);
-		free(((t_ops *)(tlist->content))->q_chk);
 		free(((t_ops *)(tlist->content)));
 		free(tlist);
 		tlist = tlist->next;

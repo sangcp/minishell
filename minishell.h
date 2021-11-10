@@ -29,7 +29,6 @@ typedef struct s_ops
 	char			type;
 	int				fds[2];
 	char			q;
-	char			*q_chk;
 	struct s_ops	*next;
 	struct s_ops	*prev;
 }					t_ops;

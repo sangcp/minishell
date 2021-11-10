@@ -66,16 +66,16 @@ char	**q_del(t_shell *mini, t_list *list, char **args)
 	while (args[i])
 		i++;
 	tmp = (char **)malloc(sizeof(char *) * (i + 1));
-	((t_ops *)(list->content))->q_chk = (char *)malloc(sizeof(char) * (i + 1));
-	((t_ops *)(list->content))->q_chk[i] = '\0';
+	//((t_ops *)(list->content))->q_chk = (char *)malloc(sizeof(char) * (i + 1));
+	//((t_ops *)(list->content))->q_chk[i] = '\0';
 	line = ((t_ops *)(list->content))->operation;
 	i = -1;
 	while (args[++i])
 	{
 		while (ft_strncmp(line, args[i], ft_strlen(args[i])))
 			line++;
-		if (line[ft_strlen(args[i]) - 1] && line[ft_strlen(args[i])] != ' ')
-			((t_ops *)(list->content))->q_chk[i] = '0';
+		// if (line[ft_strlen(args[i]) - 1] && line[ft_strlen(args[i])] != ' ')
+		// 	((t_ops *)(list->content))->q_chk[i] = '0';
 		q_d(mini, args, tmp, i);
 		line += ft_strlen(args[i]);
 	}
