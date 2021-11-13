@@ -279,6 +279,29 @@ char	*cmd_change(t_shell *mini, char **in)
 	return (*in);
 }
 
+int	first_oper(t_list **list, char *cmd)
+{
+	t_ops	*ops;
+	int		r;
+
+	ops = (t_ops *)malloc(sizeof(t_ops));
+	r = 0;
+	if (ft_strchr("<>", cmd[1]))
+	{
+		r = 1;
+		if (cmd[1] == '<')
+			ops->type = '{';
+		else
+			ops->type = '}';
+	}
+	else
+		ops->type = cmd[0];
+	ops->operation = NULL;
+	ops->args = NULL;
+	ft_lstadd_back(list, ft_lstnew(ops));
+	return (r);
+}
+
 t_list	*parse_option(t_shell *mini, char **command)
 {
 	t_list	*list;
@@ -300,6 +323,13 @@ t_list	*parse_option(t_shell *mini, char **command)
 		return (NULL);
 	}
 	ftmp = cmd;
+	if (ft_strchr("|<>", cmd[0]))
+	{
+		if (first_oper(&list, cmd))
+			cmd += 2;
+		else
+			cmd++;
+	}
 	while (1)
 	{
 		if (cmd[++i] == '\'' || cmd[i] == '\"')

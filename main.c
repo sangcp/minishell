@@ -31,6 +31,7 @@ int	main(int ac, char **av, char **envp)
 {
 	char	*cmd;
 	int		i;
+	int		status;
 	t_shell	mini;
 	t_list	*list;
 
@@ -47,6 +48,7 @@ int	main(int ac, char **av, char **envp)
 		list = parse_option(&mini, &cmd);
 		//i = q_chk(&mini, list);
 		i = main_norm(&mini, list);
+		waitpid(-1, &status, 0);
 		free_all(&mini, list, &cmd);
 		reset_fds(&mini);
 		if (i == -1)

@@ -17,7 +17,11 @@ void	reset_fds(t_shell *mini)
 	dup2(mini->fds[0], 0);
 	dup2(mini->fds[1], 1);
 	dup2(mini->stdinp, 0);
-	dup2(mini->stdout, 1);
+	dup2(mini->fdout, 1);
+	/*ft_close(mini->fds[0]);
+	ft_close(mini->fds[1]);
+	mini->fds[0] = -1;
+	mini->fds[1] = -1;*/
 }
 
 void	mini_c_p(t_shell *mini, t_list *list)

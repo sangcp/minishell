@@ -59,9 +59,11 @@ int	run_cmd2(t_shell *mini, char **envp)
 		bin_chk(mini);
 		while (path[i] && mini->args[0][0] != '\0')
 			cmd_exec(path[i++], mini);
-		printf("minishell: %s: command not found \n", mini->args[0]);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(mini->args[0], 2);
+		ft_putstr_fd(": command not found \n", 2);
 		path_free(path);
-		return (-1);
+		return (127);
 	}
 	wait(&pid);
 	return (0);
@@ -95,7 +97,12 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 		return (cmd_pwd(args));
 	if (!(ft_strncmp(args[0], "unset", 5)))
 		return (cmd_unset(mini));
-	return (run_cmd2(mini, mini->c_evs));
+	run_cmd2(mini, mini->c_evs);
+	// ft_close(mini->fds[0]);
+	// ft_close(mini->fds[1]);
+	// mini->fds[0] = -1;
+	// mini->fds[1] = -1;
+	return (0);
 }
 
 int	run_cmd1(t_shell *mini, t_list *list)

@@ -27,13 +27,8 @@ int	multi_chk1(t_shell *mini, t_list *list)
 		(((t_ops *)(tlist->next->content))->type == '>' || \
 		((t_ops *)(tlist->next->content))->type == '}'))
 			i = 1;
-		if (((t_ops *)(tlist->content))->type == ';')
-			return (i);
 		tlist = tlist->next;
 	}
-	tlist = list;
-	while (tlist && ((t_ops *)(tlist->content))->type != '{')
-		tlist = tlist->next;
 	return (i);
 }
 

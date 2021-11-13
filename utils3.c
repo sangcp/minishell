@@ -17,3 +17,9 @@ void	all_fr(char **env, char **tmp)
 	path_free(env);
 	free(*tmp);
 }
+
+void	ft_close(int fd)
+{
+	if (fd > 0)
+		close(fd);
+}

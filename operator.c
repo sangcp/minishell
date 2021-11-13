@@ -27,7 +27,7 @@ int	operator_pipe(t_list *list, t_shell *mini)
 		mini->rv = exec_cmp(mini, mini->args, list);
 		exit(0);
 	}
-	wait(&pid);
+	//wait(&pid);
 	close(((t_ops *)(list->content))->fds[1]);
 	mini->prev_pipe = ((t_ops *)(list->content))->fds[0];
 	return (0);

@@ -47,10 +47,13 @@ void	free_all(t_shell *mini, t_list *list, char **cmd)
 	tlist = list;
 	while (tlist)
 	{
-		while (((t_ops *)(tlist->content))->args[i])
-			free(((t_ops *)(tlist->content))->args[i++]);
-		if (((t_ops *)(tlist->content))->args)
-			free(((t_ops *)(tlist->content))->args);
+		if (((t_ops *)(tlist->content))->args != NULL)
+		{
+			while (((t_ops *)(tlist->content))->args[i])
+				free(((t_ops *)(tlist->content))->args[i++]);
+			if (((t_ops *)(tlist->content))->args)
+				free(((t_ops *)(tlist->content))->args);
+		}
 		if (((t_ops *)(tlist->content))->operation)
 			free(((t_ops *)(tlist->content))->operation);
 		if (((t_ops *)(tlist->content)))
