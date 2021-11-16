@@ -45,8 +45,8 @@ typedef struct s_shell
 	int				fds[2];
 	int				prev_pipe;
 	int				count;
-	int				stdinp;
-	int				fdout;
+	int				in;
+	int				out;
 	int				minipid;
 	struct termios	term;
 	struct termios	t_sv;
@@ -86,6 +86,7 @@ void	free_list(t_list **list);
 char	*pipe_join(char **s1, char *s2);
 void	all_fr(char **env, char **tmp);
 void	ft_close(int fd);
+void	full_reset(t_shell *mini);
 // ------ signal.c -----//
 
 void	sighandler1(int sig);

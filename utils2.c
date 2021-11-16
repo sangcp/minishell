@@ -14,14 +14,26 @@
 
 void	reset_fds(t_shell *mini)
 {
-	dup2(mini->fds[0], 0);
-	dup2(mini->fds[1], 1);
-	dup2(mini->stdinp, 0);
-	dup2(mini->fdout, 1);
+	// dup2(mini->fds[0], 0);
+	// dup2(mini->fds[1], 1);
+	//dup2(mini->stdinp, 0);
+	//dup2(mini->fdout, 1);
 	/*ft_close(mini->fds[0]);
 	ft_close(mini->fds[1]);
 	mini->fds[0] = -1;
 	mini->fds[1] = -1;*/
+	mini->fds[0] = -1;
+	mini->fds[1] = -1;
+	mini->prev_pipe = -1;
+}
+
+void	full_reset(t_shell *mini)
+{
+	dup2(mini->in, STDIN_FILENO);
+	dup2(mini->out, STDOUT_FILENO);
+	ft_close(mini->fds[0]);
+	ft_close(mini->fds[1]);
+	reset_fds(mini);
 }
 
 void	mini_c_p(t_shell *mini, t_list *list)
@@ -49,6 +61,7 @@ void	list_jmp(t_shell *mini, t_list **list)
 	}
 	if (mini->here_ck && mini->heredoc_name)
 		free(mini->heredoc_name);
+	mini->i = 0;
 }
 
 void	free_list(t_list **list)

@@ -35,8 +35,8 @@ int	main(int ac, char **av, char **envp)
 	t_shell	mini;
 	t_list	*list;
 
-	reset_fds(&mini);
 	init_term_env(&mini, envp);
+	reset_fds(&mini);
 	while (1)
 	{
 		signal(SIGINT, &sighandler1);
@@ -48,9 +48,10 @@ int	main(int ac, char **av, char **envp)
 		list = parse_option(&mini, &cmd);
 		//i = q_chk(&mini, list);
 		i = main_norm(&mini, list);
-		waitpid(-1, &status, 0);
 		free_all(&mini, list, &cmd);
-		reset_fds(&mini);
+		//reset_fds(&mini);
+		full_reset(&mini);
+		waitpid(-1, &status, 0);
 		if (i == -1)
 			break ;
 	}

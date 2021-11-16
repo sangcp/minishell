@@ -36,7 +36,10 @@ char	**put_evs(t_shell *mini, char **envp)
 
 void	init_term_env(t_shell *mini, char **envp)
 {
+	mini->rv = 0;
 	mini->c_evs = put_evs(mini, envp);
+	mini->in = dup(STDIN_FILENO);
+	mini->out = dup(STDOUT_FILENO);
 	tcgetattr(STDIN_FILENO, &mini->t_sv);
 	tcgetattr(STDIN_FILENO, &mini->term);
 	mini->term.c_lflag &= ~ICANON;

@@ -63,6 +63,7 @@ int	run_cmd2(t_shell *mini, char **envp)
 		ft_putstr_fd(mini->args[0], 2);
 		ft_putstr_fd(": command not found \n", 2);
 		path_free(path);
+		mini->rv = 127;
 		exit(127);
 	}
 	wait(&pid);
@@ -98,11 +99,13 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 	if (!(ft_strncmp(args[0], "unset", 5)))
 		return (cmd_unset(mini));
 	run_cmd2(mini, mini->c_evs);
+	ft_close(mini->prev_pipe);
+	mini->prev_pipe = -1;
 	// ft_close(mini->stdinp);
 	// ft_close(mini->fdout);
 	// mini->fds[0] = -1;
 	// mini->fds[1] = -1;
-	return (0);
+	return (mini->rv);
 }
 
 int	run_cmd1(t_shell *mini, t_list *list)
