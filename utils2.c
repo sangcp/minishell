@@ -22,6 +22,8 @@ void	reset_fds(t_shell *mini)
 	ft_close(mini->fds[1]);
 	mini->fds[0] = -1;
 	mini->fds[1] = -1;*/
+	mini->pipe[0] = -1;
+	mini->pipe[1] = -1;
 	mini->fds[0] = -1;
 	mini->fds[1] = -1;
 	mini->prev_pipe = -1;

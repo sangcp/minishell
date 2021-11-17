@@ -44,6 +44,7 @@ typedef struct s_shell
 	int				rv;
 	int				fds[2];
 	int				prev_pipe;
+	int				pipe[2];
 	int				count;
 	int				in;
 	int				out;
@@ -120,7 +121,7 @@ void	restore_term(t_shell *mini);
 int		cmd_unset(t_shell *mini);
 
 // --- cmd_cd.c -- //
-int		cmd_cd(char **args, char **envp);
+int		cmd_cd(char **args, t_shell *mini);
 
 // -- cmd_echo.c
 int		cmd_echo(t_list *list, char **args);
@@ -147,7 +148,7 @@ void	envp_strdup(char **envp, char **env, char *new_env, int j);
 // --- multi_oper.c
 int		operator_exec1(t_list *list, t_shell *mini);
 int		multi_oper(t_list *list, t_shell *mini);
-int		operator_exec(t_list *list, t_shell *mini);
+void	operator_exec(t_list *list, t_shell *mini);
 // --- multi_oper_utils.c
 int		multi_chk1(t_shell *mini, t_list *list);
 int		multi_chk2(t_shell *mini, t_list *list);

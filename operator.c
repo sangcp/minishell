@@ -17,6 +17,19 @@ int	operator_pipe(t_list *list, t_shell *mini)
 	pid_t	pid;
 
 	mini->args = ((t_ops *)(list->content))->args;
+	// pipe(mini->pipe);
+	// pid = fork();
+	// if (pid == 0)
+	// {
+	// 	ft_close(mini->pipe[1]);
+	// 	dup2(mini->pipe[0], 0);
+	// 	//mini->rv = exec_cmp(mini, mini->args, list);
+	// 	return (2);
+	// }
+	// ft_close(mini->pipe[0]);
+	// dup2(mini->pipe[1], 1);
+	// return (1);
+	// -----
 	pipe(((t_ops *)(list->content))->fds);
 	pid = fork();
 	if (pid == 0)
@@ -24,10 +37,10 @@ int	operator_pipe(t_list *list, t_shell *mini)
 		close(((t_ops *)(list->content))->fds[0]);
 		dup2(mini->prev_pipe, STDIN_FILENO);
 		dup2(((t_ops *)(list->content))->fds[1], 1);
-		mini->rv = exec_cmp(mini, mini->args, list);
-		exit(0);
+		exec_cmp(mini, mini->args, list);
+		exit(2);
 	}
-	//wait(&pid);
+	wait(&pid);
 	close(((t_ops *)(list->content))->fds[1]);
 	mini->prev_pipe = ((t_ops *)(list->content))->fds[0];
 	return (0);
@@ -112,7 +125,8 @@ int	redirect_input(t_list *list, t_shell *mini)
 	// }
 	if (mini->fds[0] == -1)
 	{
-		printf("%s: no such file or directory\n", filename);
+		ft_putstr_fd(filename, 2);
+		ft_putstr_fd(": no such file or directory\n", 2);
 		return (-1);
 	}
 	dup2(mini->fds[0], STDIN_FILENO);

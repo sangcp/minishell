@@ -146,30 +146,53 @@ int	operator_exec_fix(t_list *list, t_shell *mini)
 		return (-1);
 }
 
-int	operator_exec(t_list *list, t_shell *mini)
+void	operator_exec(t_list *list, t_shell *mini)
 {
 	t_list	*tlist;
 	int		pipe;
+	int		i;
 
 	tlist = list;
+	pipe = 0;
+	i = 0;
+	mini->args = ((t_ops *)(list->content))->args;
 	heredoc_chk(list, mini);
 	while (tlist)
 	{
 		if (((t_ops *)(tlist->content))->type == '>' || \
 		((t_ops *)(tlist->content))->type == '}')
-			redirect_output(tlist, mini);
+			i = redirect_output(tlist, mini);
 		else if (((t_ops *)(tlist->content))->type == '<' || \
 		((t_ops *)(tlist->content))->type == '{')
-			redirect_input(tlist, mini);
+			i = redirect_input(tlist, mini);
 		mini->i++;
 		if (((t_ops *)(tlist->content))->type == '|')
 			break ;
 		tlist = tlist->next;
 	}
 	mini->i -= 2;
+	if (i == -1)
+		return ;
 	if (tlist)
+	{
 		pipe = operator_pipe(list, mini);
-	else
+	}
+	else //if (pipe != 1)
 		mini->rv = exec_cmp(mini, mini->args, list);
-	return (0);
+	// if (tlist)
+	// {
+	// 	if (((t_ops *)(tlist->content))->type == '|')
+	// 	{
+	// 		pipe = operator_pipe(list, mini);
+	// 		if (pipe != 1)
+	// 			operator_exec(tlist->next, mini);
+	// 	}
+	// }
+	// if (1)
+	// {
+	// 	ft_putnbr_fd(pipe, 2);
+	// 	ft_putstr_fd(mini->args[0], 2);
+	// 	ft_putstr_fd("\n", 2);
+	// 	mini->rv = exec_cmp(mini, mini->args, list);
+	// }
 }

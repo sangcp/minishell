@@ -31,7 +31,6 @@ int	main(int ac, char **av, char **envp)
 {
 	char	*cmd;
 	int		i;
-	int		status;
 	t_shell	mini;
 	t_list	*list;
 
@@ -51,7 +50,6 @@ int	main(int ac, char **av, char **envp)
 		free_all(&mini, list, &cmd);
 		//reset_fds(&mini);
 		full_reset(&mini);
-		waitpid(-1, &status, 0);
 		if (i == -1)
 			break ;
 	}

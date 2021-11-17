@@ -20,11 +20,11 @@ char	*get_path(char **strs)
 		return (strs[1] + 1);
 }
 
-int	cmd_cd(char **args, char **envp)
+int	cmd_cd(char **args, t_shell *mini)
 {
 	if (args[1][0] == '~')
 	{
-		if ((chdir(ft_strjoin(get_env(envp, "HOME"), get_path(args), 4))) == -1)
+		if ((chdir(ft_strjoin(get_env(mini->c_evs, "HOME"), get_path(args), 4))) == -1)
 			ft_putstr_fd("cd fail\n", 2);
 		return (0);
 	}
