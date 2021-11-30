@@ -49,6 +49,7 @@ typedef struct s_shell
 	int				in;
 	int				out;
 	int				minipid;
+	int				pipe_chk;
 	struct termios	term;
 	struct termios	t_sv;
 	int				i;

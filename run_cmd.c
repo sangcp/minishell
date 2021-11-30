@@ -83,6 +83,8 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 		return (0);
 	if (ft_strcmp(args[0], "exit") == 0)
 	{
+		if (mini->pipe_chk == 1)
+			return (0);
 		ft_putstr_fd("exit\n", 2);
 		return (-1);
 	}

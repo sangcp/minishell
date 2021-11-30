@@ -167,7 +167,10 @@ void	operator_exec(t_list *list, t_shell *mini)
 			i = redirect_input(tlist, mini);
 		mini->i++;
 		if (((t_ops *)(tlist->content))->type == '|')
+		{
+			mini->pipe_chk = 1;
 			break ;
+		}
 		tlist = tlist->next;
 	}
 	mini->i -= 2;

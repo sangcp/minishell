@@ -27,6 +27,7 @@ void	reset_fds(t_shell *mini)
 	mini->fds[0] = -1;
 	mini->fds[1] = -1;
 	mini->prev_pipe = -1;
+	mini->pipe_chk = 0;
 }
 
 void	full_reset(t_shell *mini)
