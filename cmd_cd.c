@@ -42,34 +42,40 @@ void	change_pwd(t_shell *mini, char **oldpwd)
 		i++;
 	free(mini->c_evs[i]);
 	mini->c_evs[i] = *oldpwd;
-	ft_putstr_fd(mini->c_evs[i], 2);
 	i = 0;
 	while (ft_strncmp(mini->c_evs[i], "PWD=", 4))
 		i++;
 	free(mini->c_evs[i]);
 	mini->c_evs[i] = get_pwd("PWD=");
-	ft_putstr_fd(mini->c_evs[i], 2);
 }
 
 int	cmd_cd(char **args, t_shell *mini)
 {
 	char	*oldpwd;
+	char	*tilde_path;
 
 	oldpwd = get_pwd("OLDPWD=");
 	if (args[1][0] == '~')
 	{
-		if ((chdir(ft_strjoin(get_env(mini->c_evs, "HOME"), get_path(args), 4))) == -1)
+		tilde_path = ft_strjoin(get_env(mini->c_evs, "HOME"), get_path(args), 4);
+		if (chdir(tilde_path) == -1)
 		{
-			ft_putstr_fd("cd fail\n", 2);
-			return (-1);
+			ft_putstr_fd(tilde_path, 2);
+			ft_putstr_fd(" :No such file or directory\n", 2);
+			free(oldpwd);
+			free(tilde_path);
+			return (0);
 		}
+		free(tilde_path);
 		change_pwd(mini, &oldpwd);
 		return (0);
 	}
 	if ((chdir(args[1])) == -1)
 	{
-		ft_putstr_fd("cd fail\n", 2);
-		return (-1);
+		ft_putstr_fd(args[1], 2);
+		ft_putstr_fd(" :No such file or directory\n", 2);
+		free(oldpwd);
+		return (0);
 	}
 	change_pwd(mini, &oldpwd);
 	return (0);
