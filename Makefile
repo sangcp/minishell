@@ -57,10 +57,10 @@ CC = gcc -g
 CFLAGS = -Wall -Werror -Wextra
 #READ = -lreadline -L$(HOME)/.brew/opt/readline/lib -I$(HOME)/.brew/opt/readline/include
 #READ2 = -I$(HOME)/.brew/opt/readline/include
-READ = -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
-READ2 = -I/opt/homebrew/opt/readline/include
-#READ = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
-#READ2 = -I/usr/local/opt/readline/include
+#READ = -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
+#READ2 = -I/opt/homebrew/opt/readline/include
+READ = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
+READ2 = -I/usr/local/opt/readline/include
 
 
 

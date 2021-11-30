@@ -8,7 +8,7 @@ char	*get_cmd(int ac, char **av)
 	(void)ac;
 	(void)av;
 	i = 0;
-	cmd = readline("minishell$ ");
+	cmd = readline("\033[1;32mminishell$ \033[0m");
 	if (!cmd)
 	{
 		printf("\x1b[2A");

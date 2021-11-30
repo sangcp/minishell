@@ -43,6 +43,7 @@ int	run_cmd2(t_shell *mini, char **envp)
 	char	**path;
 	pid_t	pid;
 	int		i;
+	int		status;
 
 	pid = fork();
 	signal(SIGINT, sighandler2);
@@ -53,8 +54,10 @@ int	run_cmd2(t_shell *mini, char **envp)
 		path = ft_split2(get_env(envp, "PATH"), ':');
 		if (!path)
 		{
-			printf("minishell: %s: No such file or directory\n", mini->args[0]);
-			return (-1);
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(mini->args[0], 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
+			exit (2);
 		}
 		bin_chk(mini);
 		while (path[i] && mini->args[0][0] != '\0')
@@ -63,10 +66,13 @@ int	run_cmd2(t_shell *mini, char **envp)
 		ft_putstr_fd(mini->args[0], 2);
 		ft_putstr_fd(": command not found \n", 2);
 		path_free(path);
-		//mini->rv = 127;
-		exit(127);
+		exit(2);
 	}
-	wait(&pid);
+	waitpid(pid, &status, WUNTRACED);
+	if (status != 0)
+		mini->rv = 127;
+	else
+		mini->rv = 0;
 	return (0);
 }
 
@@ -113,7 +119,7 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 	// ft_close(mini->fdout);
 	// mini->fds[0] = -1;
 	// mini->fds[1] = -1;
-	return (mini->rv);
+	return (0);
 }
 
 int	run_cmd1(t_shell *mini, t_list *list)

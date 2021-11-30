@@ -239,7 +239,9 @@ int	repl_env(int i, char **in, t_shell *mini)
 	val = NULL;
 	if ((*in)[i + 1] == '?')
 	{
-		*in = repl_change(*in, i, 2, ft_itoa(mini->rv));
+		tmp = repl_change(*in, i, 2, ft_itoa(mini->rv));
+		free(*in);
+		*in = tmp;
 		return (1);
 	}
 	else
