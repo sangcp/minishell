@@ -48,7 +48,6 @@ int	main(int ac, char **av, char **envp)
 		//i = q_chk(&mini, list);
 		i = main_norm(&mini, list);
 		free_all(&mini, list, &cmd);
-		//reset_fds(&mini);
 		full_reset(&mini);
 		if (i == -1)
 			break ;

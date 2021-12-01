@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 10:03:38 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/27 19:40:43 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 14:45:15 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,25 @@ void	bin_chk(t_shell *mini)
 	}
 }
 
+void	put_err_msg(char *msg, int chk, char **path)
+{
+	if (chk == 1)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(msg, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		exit(2);
+	}
+	else
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(msg, 2);
+		ft_putstr_fd(": command not found \n", 2);
+		path_free(path);
+		exit(2);
+	}
+}
+
 int	run_cmd2(t_shell *mini, char **envp)
 {
 	char	**path;
@@ -53,20 +72,11 @@ int	run_cmd2(t_shell *mini, char **envp)
 	{
 		path = ft_split2(get_env(envp, "PATH"), ':');
 		if (!path)
-		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(mini->args[0], 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
-			exit (2);
-		}
+			put_err_msg(mini->args[0], 1, NULL);
 		bin_chk(mini);
 		while (path[i] && mini->args[0][0] != '\0')
 			cmd_exec(path[i++], mini);
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(mini->args[0], 2);
-		ft_putstr_fd(": command not found \n", 2);
-		path_free(path);
-		exit(2);
+		put_err_msg(mini->args[0], 2, path);
 	}
 	waitpid(pid, &status, WUNTRACED);
 	if (status != 0)
@@ -74,6 +84,23 @@ int	run_cmd2(t_shell *mini, char **envp)
 	else
 		mini->rv = 0;
 	return (0);
+}
+
+int	exec_cmp_norm(t_shell *mini, char **args, t_list *list)
+{
+	if (!(ft_strncmp(args[0], "cd", 2)))
+		return (cmd_cd(args, mini));
+	if (!(ft_strncmp(args[0], "echo", 4)))
+		return (cmd_echo(list, args));
+	if (!(ft_strncmp(args[0], "export", 7)))
+		return (cmd_export(mini, args, list));
+	if (!(ft_strncmp(args[0], "env", 3)))
+		return (cmd_env(args, mini, list));
+	if (!(ft_strncmp(args[0], "pwd", 3)))
+		return (cmd_pwd(args));
+	if (!(ft_strncmp(args[0], "unset", 5)))
+		return (cmd_unset(mini));
+	return (100);
 }
 
 int	exec_cmp(t_shell *mini, char **args, t_list *list)
@@ -88,28 +115,9 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 		ft_putstr_fd("exit\n", 2);
 		return (-1);
 	}
-	if (!(ft_strncmp(args[0], "cd", 2)))
-		return (cmd_cd(args, mini));
-	if (!(ft_strncmp(args[0], "echo", 4)))
-	{
-		cmd_echo(list, args);
+	if (exec_cmp_norm(mini, args, list) != 100)
 		return (0);
-	}
-	if (!(ft_strncmp(args[0], "export", 7)))
-	{
-		cmd_export(mini, args, list);
-		return (0);
-	}
-	if (!(ft_strncmp(args[0], "env", 3)))
-		return (cmd_env(args, mini, list));
-	if (!(ft_strncmp(args[0], "pwd", 3)))
-		return (cmd_pwd(args));
-	if (!(ft_strncmp(args[0], "unset", 5)))
-		return (cmd_unset(mini));
 	run_cmd2(mini, mini->c_evs);
-	// ft_putnbr_fd(mini->prev_pipe, 2);
-	// ft_putstr_fd(mini->args[0], 2);
-	// ft_putstr_fd("\n", 2);
 	ft_close(((t_ops *)(list->content))->fds[0]);
 	ft_close(mini->pipe[1]);
 	ft_close(mini->pipe[0]);
@@ -117,16 +125,11 @@ int	exec_cmp(t_shell *mini, char **args, t_list *list)
 	mini->pipe[0] = -1;
 	mini->pipe[1] = -1;
 	mini->prev_pipe = -1;
-	// ft_close(mini->stdinp);
-	// ft_close(mini->fdout);
-	// mini->fds[0] = -1;
-	// mini->fds[1] = -1;
 	return (0);
 }
 
 int	run_cmd1(t_shell *mini, t_list *list)
 {
-	//int	status;
 	int		i;
 
 	i = 0;
@@ -138,8 +141,6 @@ int	run_cmd1(t_shell *mini, t_list *list)
 		if (ft_strchr("|<>{}", ((t_ops *)(list->content))->type))
 		{
 			operator_exec(list, mini);
-			//full_reset(mini);
-			//waitpid(-1, &status, 0);
 			if (((t_ops *)(list->content))->type != '|')
 				list = list->next;
 		}

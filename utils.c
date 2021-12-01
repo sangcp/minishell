@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 16:21:04 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/27 19:41:39 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 14:19:00 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ void	free_all(t_shell *mini, t_list *list, char **cmd)
 		{
 			while (((t_ops *)(tlist->content))->args[i])
 				free(((t_ops *)(tlist->content))->args[i++]);
-			if (((t_ops *)(tlist->content))->args)
-				free(((t_ops *)(tlist->content))->args);
+			free(((t_ops *)(tlist->content))->args);
 		}
 		if (((t_ops *)(tlist->content))->operation)
 			free(((t_ops *)(tlist->content))->operation);

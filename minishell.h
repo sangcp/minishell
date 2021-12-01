@@ -57,7 +57,7 @@ typedef struct s_shell
 }					t_shell;
 
 //---- main.c ---//
-void	cmd_export(t_shell *mini, char **args, t_list *list);
+int		cmd_export(t_shell *mini, char **args, t_list *list);
 int		cmd_env(char **args, t_shell *mini, t_list *list);
 char	**plus_line(char **env, char *new_env);
 int		print_export(char *str, char **envp);

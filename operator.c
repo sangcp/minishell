@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 09:03:35 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/27 19:45:33 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 13:32:01 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,6 @@ int	operator_pipe(t_list *list, t_shell *mini)
 	pid_t	pid;
 
 	mini->args = ((t_ops *)(list->content))->args;
-	// pipe(mini->pipe);
-	// pid = fork();
-	// if (pid == 0)
-	// {
-	// 	ft_close(mini->pipe[1]);
-	// 	dup2(mini->pipe[0], 0);
-	// 	//mini->rv = exec_cmp(mini, mini->args, list);
-	// 	return (2);
-	// }
-	// ft_close(mini->pipe[0]);
-	// dup2(mini->pipe[1], 1);
-	// return (1);
-	// -----
 	pipe(((t_ops *)(list->content))->fds);
 	pid = fork();
 	if (pid == 0)
@@ -48,33 +35,17 @@ int	operator_pipe(t_list *list, t_shell *mini)
 
 int	redirect_output(t_list *list, t_shell *mini)
 {
-	//int		fd;
 	char	*filename;
 
-	//mini->fds[0] = dup(STDOUT_FILENO);
 	ft_close(mini->fds[1]);
 	filename = ((t_ops *)(list->next->content))->args[0];
 	if (((t_ops *)(list->content))->type == '>')
 		mini->fds[1] = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	else
 		mini->fds[1] = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	// while (((t_ops *)(list->next->content))->type == '>' || \
-	// ((t_ops *)(list->next->content))->type == '}')
-	// {
-	// 	mini->i++;
-	// 	list = list->next;
-	// 	filename = ((t_ops *)(list->next->content))->args[0];
-	// 	if (((t_ops *)(list->next->content))->type == '>')
-	// 		mini->fds[1] = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-	// 	else
-	// 		mini->fds[1] = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	// }
 	if (mini->fds[1] == -1)
 		return (-1);
 	dup2(mini->fds[1], STDOUT_FILENO);
-	//mini->rv = exec_cmp(mini, mini->args, list);
-	//dup2(mini->fds[0], STDOUT_FILENO);
-	//close(mini->fds[1]);
 	return (0);
 }
 
@@ -86,17 +57,6 @@ int	append_output(t_list *list, t_shell *mini)
 	mini->fds[0] = dup(STDOUT_FILENO);
 	filename = ((t_ops *)(list->next->content))->args[0];
 	fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	// while (((t_ops *)(list->next->content))->type == '>' || \
-	// ((t_ops *)(list->next->content))->type == '}')
-	// {
-	// 	mini->i++;
-	// 	list = list->next;
-	// 	filename = ((t_ops *)(list->next->content))->args[0];
-	// 	if (((t_ops *)(list->next->content))->type == '>')
-	// 		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-	// 	else
-	// 		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	// }
 	if (fd == -1)
 		return (-1);
 	dup2(fd, STDOUT_FILENO);
@@ -108,21 +68,11 @@ int	append_output(t_list *list, t_shell *mini)
 
 int	redirect_input(t_list *list, t_shell *mini)
 {
-	//int		fd;
 	char	*filename;
 
-	//mini->fds[0] = dup(STDIN_FILENO);
 	ft_close(mini->fds[0]);
 	filename = ((t_ops *)(list->next->content))->args[0];
 	mini->fds[0] = open(filename, O_RDONLY);
-	// while (((t_ops *)(list->next->content))->type == '<' || \
-	// ((t_ops *)(list->next->content))->type == '{')
-	// {
-	// 	mini->i++;
-	// 	list = list->next;
-	// 	filename = ((t_ops *)(list->next->content))->args[0];
-	// 	mini->fds[0] = open(filename, O_RDONLY);
-	// }
 	if (mini->fds[0] == -1)
 	{
 		ft_putstr_fd(filename, 2);
@@ -130,9 +80,6 @@ int	redirect_input(t_list *list, t_shell *mini)
 		return (-1);
 	}
 	dup2(mini->fds[0], STDIN_FILENO);
-	// mini->rv = exec_cmp(mini, mini->args, list);
-	// dup2(mini->fds[0], STDIN_FILENO);
-	// close(fd);
 	return (0);
 }
 

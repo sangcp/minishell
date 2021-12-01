@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 02:20:40 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/27 18:23:53 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 13:59:58 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,6 @@ int	cmd_chk(char **cmd)
 		i++;
 	if (!(*cmd)[i])
 		return (1);
-	/*if (q && (((*cmd)[i] == '\'' || (*cmd)[i] == '\"') && !(*cmd)[i + 1]))
-	{
-		//ft_putstr_fd("minishell:  : command not found\n", 2);
-		return (1);
-	}*/
 	i = 0;
 	if (oper_err_msg(cmd, i))
 		return (1);
@@ -121,9 +116,9 @@ int	cmd_chk(char **cmd)
 int	line_chk(char *line, int i)
 {
 	(void)line;
-	/*return (((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
-	(line[i] != ' ' && line[i + 1] == ' ')) && i > 0) || \
-	(i == 0 && line[0] && !line[1]) || \
-	(i == 1 && line[i] == ' ' && line[i + 1] != ' '));*/
 	return (i);
 }
+// return (((line[0] == '\"' || line[0] == '\'' || !line[i + 1] || \
+	// (line[i] != ' ' && line[i + 1] == ' ')) && i > 0) || \
+	// (i == 0 && line[0] && !line[1]) || \
+	// (i == 1 && line[i] == ' ' && line[i + 1] != ' '));

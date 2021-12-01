@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 16:47:23 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/16 19:17:49 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 14:28:07 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int	dol_chk(char *line)
 	return (0);
 }
 
-void	cmd_export(t_shell *mini, char **args, t_list *list)
+int	cmd_export(t_shell *mini, char **args, t_list *list)
 {
 	int		i;
 	char	*line;
@@ -125,4 +125,5 @@ void	cmd_export(t_shell *mini, char **args, t_list *list)
 	else
 		while (args[++i])
 			mini->c_evs = plus_line(mini->c_evs, args[i]);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 03:35:34 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/25 03:35:35 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 14:00:59 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,15 @@ void	change_pwd(t_shell *mini, char **oldpwd)
 	mini->c_evs[i] = get_pwd("PWD=");
 }
 
+int	cd_norm(char **tilde_path, char **oldpwd)
+{
+	ft_putstr_fd(*tilde_path, 2);
+	ft_putstr_fd(" :No such file or directory\n", 2);
+	free(*oldpwd);
+	free(*tilde_path);
+	return (0);
+}
+
 int	cmd_cd(char **args, t_shell *mini)
 {
 	char	*oldpwd;
@@ -57,15 +66,10 @@ int	cmd_cd(char **args, t_shell *mini)
 	oldpwd = get_pwd("OLDPWD=");
 	if (args[1][0] == '~')
 	{
-		tilde_path = ft_strjoin(get_env(mini->c_evs, "HOME"), get_path(args), 4);
+		tilde_path = ft_strjoin(get_env(mini->c_evs, "HOME"), \
+		get_path(args), 4);
 		if (chdir(tilde_path) == -1)
-		{
-			ft_putstr_fd(tilde_path, 2);
-			ft_putstr_fd(" :No such file or directory\n", 2);
-			free(oldpwd);
-			free(tilde_path);
-			return (0);
-		}
+			return (cd_norm(&tilde_path, &oldpwd));
 		free(tilde_path);
 		change_pwd(mini, &oldpwd);
 		return (0);

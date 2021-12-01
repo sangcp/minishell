@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 03:58:15 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/27 20:01:40 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 13:44:12 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,6 @@
 
 void	reset_fds(t_shell *mini)
 {
-	// dup2(mini->fds[0], 0);
-	// dup2(mini->fds[1], 1);
-	//dup2(mini->stdinp, 0);
-	//dup2(mini->fdout, 1);
-	/*ft_close(mini->fds[0]);
-	ft_close(mini->fds[1]);
-	mini->fds[0] = -1;
-	mini->fds[1] = -1;*/
 	mini->pipe[0] = -1;
 	mini->pipe[1] = -1;
 	mini->fds[0] = -1;

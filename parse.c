@@ -6,7 +6,7 @@
 /*   By: sangcpar <sangcpar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/02 03:15:45 by sangcpar          #+#    #+#             */
-/*   Updated: 2021/10/27 18:25:35 by sangcpar         ###   ########.fr       */
+/*   Updated: 2021/12/01 13:54:54 by sangcpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	*qskip_substr(char const *s, unsigned int start, size_t len)
 		{
 			new = (char *)malloc(sizeof(char) * 1);
 			new[0] = '\0';
-			return(new);
+			return (new);
 		}
 	}
 	if (s == 0)
@@ -84,22 +84,9 @@ char	*qskip_substr(char const *s, unsigned int start, size_t len)
 
 void	add_back(t_list **list, t_ops *ops, char **line, int i)
 {
-	char q;
+	char	q;
+
 	(void)ops;
-	/*if ((*line)[0] == '\"' || (*line)[0] == '\'')
-	{
-		if ((*line)[0] == (*line)[1])
-		{
-			(*line) += 2;
-			i = i_jump(*line);
-		}
-		else
-			i = quote_skip((*line), i, (*line)[0], ops);
-	}
-	else if ((*line)[0] == '$')
-		i = i_jump(*line);
-	else
-		i = i_jump(*line);*/
 	i = 0;
 	while ((*line)[i] == ' ')
 		i++;
@@ -118,7 +105,6 @@ void	add_back(t_list **list, t_ops *ops, char **line, int i)
 			break ;
 	}
 	ft_lstadd_back(list, ft_lstnew(qskip_substr(*line, 0, i)));
-	//printf("q = (l=%s)(%d)(%s)\n", *line, i, qskip_substr(*line, 0, i));
 	(*line) += i;
 }
 
@@ -138,7 +124,7 @@ char	**parse_args(char *line, t_ops *ops)
 			line++;
 		if (!line[0])
 			break ;
-		if (1)//line_chk(line, i))
+		if (1) // /*line_chk(line, i))*/
 		{
 			add_back(&list, ops, &line, i);
 			i = -1;
@@ -230,6 +216,7 @@ static int	repl_env_name(char *in, int i, char **env, char **val)
 	}
 	return (clip);
 }
+
 int	repl_env(int i, char **in, t_shell *mini)
 {
 	char	*val;
