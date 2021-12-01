@@ -76,7 +76,7 @@ void	ef_init(t_ef *ef);
 void	path_free(char **str);
 int		is_quotes(char c);
 
-void	free_all(t_shell *mini, t_list *list, char **cmd);
+void	free_all(t_list *list, char **cmd);
 
 // - utils.c
 char	*get_env(char **envp, char *option);
@@ -89,6 +89,7 @@ char	*pipe_join(char **s1, char *s2);
 void	all_fr(char **env, char **tmp);
 void	ft_close(int fd);
 void	full_reset(t_shell *mini);
+
 // ------ signal.c -----//
 
 void	sighandler1(int sig);
@@ -97,14 +98,35 @@ void	pipe_sighandler1(int sig);
 void	pipe_sighandler2(int sig);
 
 // ----- parse.c ---- //
-
+char	**list_to_arr(t_list *list);
 t_list	*parse(t_shell *mini, char *cmd);
-t_list	*parse_option(t_shell *mini, char **cmd);
 t_ops	*set_ops(char *cmd, int i);
+char	**parse_args(char *line, t_ops *ops);
+char	*qskip_substr(char const *s, unsigned int start, size_t len);
+// ----- parse2.c ---- //
+int		first_oper(t_list **list, char *cmd);
+t_list	*qq1(t_list *list, char *cmd, char *ftmp);
+void	qq(t_shell *mini, char **command, char **cmd);
+t_list	*parse_option(t_shell *mini, char **command);
+void	add_back(t_list **list, t_ops *ops, char **line, int i);
+// ----- parse3.c ---- //
+char	*cmd_change(t_shell *mini, char **in);
+int		repl_env(int i, char **in, t_shell *mini);
+int		repl_env_name(char *in, int i, char **env, char **val);
+int		max(int a, int b);
+char	*repl_change(char *in, int i, int len, char *val);
 
+// ----- parse4.c ---- //
+t_ops	*set_ops(char *cmd, int i);
 // ----- run_cmd.c --- //
 int		run_cmd1(t_shell *mini, t_list *list);
 int		exec_cmp(t_shell *mini, char **args, t_list *list);
+//------ run_cmd2.c ----//
+void	cmd_exec(char *path, t_shell *mini);
+void	bin_chk(t_shell *mini);
+void	put_err_msg(char *msg, int chk, char **path);
+int		run_cmd2(t_shell *mini, char **envp);
+int		exec_cmp_norm(t_shell *mini, char **args, t_list *list);
 
 // ----- operator.c ---//
 int		redirect_input(t_list *list, t_shell *shell);
@@ -146,6 +168,9 @@ int		swap_envp(char *str1, char *str2);
 void	swap_cha(char **desen_envp, int i, int j);
 char	*equal_back(char *env);
 void	envp_strdup(char **envp, char **env, char *new_env, int j);
+void	heredoc_chk(t_list *list, t_shell *mini);
+void	oper_norm(t_shell *mini, t_list **tlist, int *i);
+
 // --- multi_oper.c
 int		operator_exec1(t_list *list, t_shell *mini);
 int		multi_oper(t_list *list, t_shell *mini);
@@ -156,6 +181,7 @@ int		multi_chk2(t_shell *mini, t_list *list);
 int		input_num(t_list *list);
 void	heredoc_count(t_list *list, int *here);
 void	m_chk(t_list *list, t_shell *mini);
+
 // --- q_del.c
 int		q_chk(t_shell *mini, t_list *list);
 // --- q_del_utils.c

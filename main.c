@@ -45,9 +45,8 @@ int	main(int ac, char **av, char **envp)
 		if (*cmd)
 			add_history(rl_line_buffer);
 		list = parse_option(&mini, &cmd);
-		//i = q_chk(&mini, list);
 		i = main_norm(&mini, list);
-		free_all(&mini, list, &cmd);
+		free_all(list, &cmd);
 		full_reset(&mini);
 		if (i == -1)
 			break ;

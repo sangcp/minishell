@@ -33,12 +33,11 @@ void	path_free(char **str)
 	}
 }
 
-void	free_all(t_shell *mini, t_list *list, char **cmd)
+void	free_all(t_list *list, char **cmd)
 {
 	t_list	*tlist;
 	int		i;
 
-	(void)mini;
 	if (*cmd)
 		free(*cmd);
 	i = 0;
